@@ -102,7 +102,7 @@ function Onboarding() {
                     <Button variant="ghost"
                         onClick={() => setCurrentId(prev => (prev - 1 + sentences.length) % sentences.length)}
                     >
-                        <ArrowLeft />Back
+                        <ArrowLeft /> Back
                     </Button>
                     <Button
                         onClick={() => setCurrentId(prev => (prev + 1) % sentences.length)}
