@@ -1,11 +1,11 @@
 import { TextHoverEffect } from "@/components/ui/text-hover-effect";
-import {TextGenerateEffect} from "@/components/ui/text-generate-effect"
+import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 import { Button } from "@/components/ui/button";
+import { LlmButton } from "@/components/LlmButton";
 import Link from "next/link";
 
-
 export default function Home() {
-const words : string= "decode your emotions, master your life."
+  const words: string = "decode your emotions, master your life.";
 
   return (
     <div className="p-5 m-5">
@@ -19,7 +19,10 @@ const words : string= "decode your emotions, master your life."
       <div className="w-full flex justify-center mt-[-90]">
         <div className="flex gap-4 mt-[-100] md:mt-0">
           <Link href="/onboarding">
-            <Button className="bg-accent text-accent-foreground hover:bg-accent/90" aria-label="Get started">
+            <Button
+              className="bg-accent text-accent-foreground hover:bg-accent/90"
+              aria-label="Get started"
+            >
               Get started
             </Button>
           </Link>
@@ -27,10 +30,9 @@ const words : string= "decode your emotions, master your life."
             Learn more
           </Button>
         </div>
-        
       </div>
-      <div className="w-full mt-4">
-      </div>
+      <div className="w-full mt-4"></div>
+      <LlmButton />
     </div>
   );
 }
