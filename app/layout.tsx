@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { NavbarComponent } from "@/components/ui/NavbarComponent";
 import { Spotlight } from "@/components/ui/spotlight-new"
+import Footer from "@/components/footer";
 
 
 
@@ -42,7 +43,8 @@ export default function RootLayout({
       <Spotlight />
       <NavbarComponent />
       
-        {children} 
+        {children}
+      <Footer />
       </ThemeProvider>
       </body>
      
