@@ -5,13 +5,13 @@ import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { ArrowLeft } from 'lucide-react';
-<<<<<<< HEAD
+
 import { cn } from "@/lib/utils"
 import  Slider  from '../../components/ui/slider';
 
-=======
+
 import Link from 'next/link';
->>>>>>> 3180e85dd56d3ea6c3dc923ecc2f114988a7d0a4
+
 <ArrowLeft />
 function Onboarding() {
     
