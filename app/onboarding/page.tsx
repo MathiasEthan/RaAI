@@ -11,7 +11,6 @@ import  Slider  from '../../components/ui/slider';
 
 
 
-<ArrowLeft />
 function Onboarding() {
     
     const sentences = [
