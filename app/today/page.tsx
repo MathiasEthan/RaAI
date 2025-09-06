@@ -7,12 +7,12 @@ import { ForwardIcon, StepBackIcon } from 'lucide-react';
 
 function Today() {
     const sentences = [
-        { id: 0, text: "The sun rose over the quiet city." },
-        { id: 1, text: "The sun rose over the quiet city 222." },
-        { id: 2, text: "Coffee steamed in the mug as the first light hit the desk." },
-        { id: 3, text: "A gentle breeze carried the scent of rain from the hills." },
-        { id: 4, text: "She opened her notebook and began to write without thinking." },
-        { id: 5, text: "By noon the market buzzed with colorful stalls and laughter." }
+        { id: 0, text: "How are you feeling today?" },
+        { id: 1, text: "How did you sleep last night?" },
+        { id: 2, text: "What's your energy level right now?" },
+        { id: 3, text: "How would you rate your stress level?" },
+        { id: 4, text: "Have you taken care of your basic needs today?" },
+        { id: 5, text: "What's your main emotion right now?" }
     ];
     const [currentId, setCurrentId] = useState<number>(0);
     const [selected, setSelected] = useState<number>(1);
@@ -21,53 +21,53 @@ function Today() {
     // simple editable texts you can modify directly
     // optionsBySentence[i] is an array of 5 option objects for sentence i.
     const optionsBySentence: { id: number; text: string }[][] = [
-        // options for sentence 0
+        // options for feeling today
         [
-            { id: 0, text: "Sunrise over the quiet city" },
-            { id: 1, text: "A soft morning hush" },
-            { id: 2, text: "Dawn paints the rooftops" },
-            { id: 3, text: "First light, slow and warm" },
-            { id: 4, text: "City wakes in amber tones" }
+            { id: 0, text: "Really good" },
+            { id: 1, text: "Pretty okay" },
+            { id: 2, text: "Neutral" },
+            { id: 3, text: "Not great" },
+            { id: 4, text: "Struggling" }
         ],
-        // options for sentence 1
+        // options for sleep
         [
-            { id: 0, text: "Sunrise version two" },
-            { id: 1, text: "Echo of the morning" },
-            { id: 2, text: "Rising light again" },
-            { id: 3, text: "Another quiet dawn" },
-            { id: 4, text: "Soft glow over streets" }
+            { id: 0, text: "Slept well" },
+            { id: 1, text: "Decent sleep" },
+            { id: 2, text: "Could be better" },
+            { id: 3, text: "Poor sleep" },
+            { id: 4, text: "Barely slept" }
         ],
-        // options for sentence 2
+        // options for energy
         [
-            { id: 0, text: "Steam curls from the mug" },
-            { id: 1, text: "Coffee and first light" },
-            { id: 2, text: "Warm cup on the desk" },
-            { id: 3, text: "Aromatic morning ritual" },
-            { id: 4, text: "Mug and a fresh page" }
+            { id: 0, text: "Very energetic" },
+            { id: 1, text: "Moderately energetic" },
+            { id: 2, text: "Average energy" },
+            { id: 3, text: "Low energy" },
+            { id: 4, text: "Very tired" }
         ],
-        // options for sentence 3
+        // options for stress
         [
-            { id: 0, text: "Breeze carries rain scent" },
-            { id: 1, text: "Wind from the hills" },
-            { id: 2, text: "Fresh, rain-tinged air" },
-            { id: 3, text: "A gentle, cool draft" },
-            { id: 4, text: "Hills whisper of showers" }
+            { id: 0, text: "Very relaxed" },
+            { id: 1, text: "Slightly stressed" },
+            { id: 2, text: "Moderately stressed" },
+            { id: 3, text: "Quite stressed" },
+            { id: 4, text: "Overwhelmed" }
         ],
-        // options for sentence 4
+        // options for basic needs
         [
-            { id: 0, text: "Opened notebook, words flow" },
-            { id: 1, text: "She writes without thinking" },
-            { id: 2, text: "Ink spills honest thoughts" },
-            { id: 3, text: "Pages fill in quiet focus" },
-            { id: 4, text: "Thoughts become visible lines" }
+            { id: 0, text: "All needs met" },
+            { id: 1, text: "Most needs met" },
+            { id: 2, text: "Some needs met" },
+            { id: 3, text: "Few needs met" },
+            { id: 4, text: "Need attention" }
         ],
-        // options for sentence 5
+        // options for main emotion
         [
-            { id: 0, text: "Market hums at noon" },
-            { id: 1, text: "Colorful stalls and laughter" },
-            { id: 2, text: "Noon bustle and bright wares" },
-            { id: 3, text: "A lively afternoon scene" },
-            { id: 4, text: "Vendors call, crowds wander" }
+            { id: 0, text: "Happy" },
+            { id: 1, text: "Calm" },
+            { id: 2, text: "Anxious" },
+            { id: 3, text: "Sad" },
+            { id: 4, text: "Mixed" }
         ]
     ];
 
