@@ -9,8 +9,9 @@ type Testimonial = {
   quote: string;
   name: string;
   designation: string;
-  src: string | { src: string }; // Modified to handle both string URLs and Next.js image imports
+  src: string; // Simplify to just string
 };
+
 export const AnimatedTestimonials = ({
   testimonials,
   autoplay = false,
@@ -50,7 +51,7 @@ export const AnimatedTestimonials = ({
             <AnimatePresence>
               {testimonials.map((testimonial, index) => (
                 <motion.div
-                  key={typeof testimonial.src === "string" ? testimonial.src : testimonial.src.src}
+                  key={`testimonial-${index}`} // Add stable key
                   initial={{
                     opacity: 0,
                     scale: 0.9,
@@ -80,11 +81,7 @@ export const AnimatedTestimonials = ({
                   className="absolute inset-0 origin-bottom"
                 >
                   <img
-                    src={
-                      typeof testimonial.src === "string"
-                        ? testimonial.src
-                        : testimonial.src.src
-                    }
+                    src={testimonial.src}
                     alt={testimonial.name}
                     width={500}
                     height={500}
