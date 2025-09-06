@@ -16,7 +16,7 @@ const weAre = [ {
         "The attention to detail and innovative features have completely transformed our workflow. This is exactly what we've been looking for.",
       name: "Aditya Parameswar",
       designation: "Head of Web Dev at Gautam Tech Solutions",
-      src: adi.src, // Change this line to use the src property of the imported image
+      src: adi.src,
     },
     {
       quote:

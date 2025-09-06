@@ -6,12 +6,8 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { ArrowLeft } from 'lucide-react';
 
-import { cn } from "@/lib/utils"
 import  Slider  from '../../components/ui/slider';
 
-
-import Link from 'next/link';
-// import router, { useRouter } from 'next/router';
 
 <ArrowLeft />
 function Onboarding() {
@@ -158,12 +154,9 @@ function Onboarding() {
                 </div>
             </div>    
         </div>
-
-        <Slider></Slider>    
-
         <div className="w-full mt-[-175]">
       </div>
-
+      <Slider />
     </>
   )
 }
