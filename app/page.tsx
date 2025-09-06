@@ -39,13 +39,7 @@ const weAre = [ {
       designation: "Engineering Lead at Gupta Vada Pav",
       src: arnav.src,
     },
-    {
-      quote:
-        "Looking black in that hot dress",
-      name: "Mox Shah",
-      designation: "Not a part of this team",
-      src: mox.src,
-    },
+    
   ];
   return (
     <div className="p-5 m-5">
