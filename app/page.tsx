@@ -1,6 +1,7 @@
 import { TextHoverEffect } from "@/components/ui/text-hover-effect";
 import {TextGenerateEffect} from "@/components/ui/text-generate-effect"
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function Home() {
 const words : string= "decode your emotions, master your life"
@@ -14,9 +15,11 @@ const words : string= "decode your emotions, master your life"
       </main>
       <div className="w-full flex justify-center mt-[-80]">
         <div className="flex gap-4">
+        <Link href="/onboarding">
           <Button className="bg-accent text-accent-foreground hover:bg-accent/90" aria-label="Get started">
         Get started
           </Button>
+        </Link>
           <Button variant="ghost" aria-label="Learn more">
         Learn more
           </Button>

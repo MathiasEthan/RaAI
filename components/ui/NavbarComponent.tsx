@@ -22,6 +22,10 @@ export function NavbarComponent() {
       name: "Dashboard",
       link: "dashboard",
     },
+    {
+      name: "Get Started",
+      link: "onboarding",
+    },
   ];
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
