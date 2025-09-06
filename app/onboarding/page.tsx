@@ -5,16 +5,23 @@ import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { ArrowLeft } from 'lucide-react';
+
+import { cn } from "@/lib/utils"
+import  Slider  from '../../components/ui/slider';
+
+
 import Link from 'next/link';
+
 <ArrowLeft />
 function Onboarding() {
+    
     const sentences = [
-        { id: 0, text: "How would you describe your emotional state most days" },
-        { id: 1, text: "How often do you find yourself reacting impulsively to difficult situations?" },
-        { id: 2, text: "What is your primary goal for using our platform?" },
-        { id: 3, text: "What emotional skill are you most interested in developing right now?" },
-        { id: 4, text: "What is the most challenging time of day for you, emotionally?" },
-        { id: 5, text: "How do you currently cope with stress?" }
+        { id: 0, text: "How often do you take time to reflect on your emotions and understand why you feel a certain way?" },
+        { id: 1, text: "How often do you recognize and understand the feelings of others in different situations?" },
+        { id: 2, text: "How often are you able to stay calm and manage your emotions during stressful or challenging situations?" },
+        { id: 3, text: "How often do you communicate your feelings clearly and respectfully to others?" },
+        { id: 4, text: "How often do you stay motivated and positive, even when faced with setbacks?" },
+        { id: 5, text: "How often do you bounce back quickly after experiencing disappointment or failure?" }
     ];
     const [currentId, setCurrentId] = useState<number>(0);
     const [selected, setSelected] = useState<number>(1);
@@ -25,49 +32,51 @@ function Onboarding() {
     const optionsBySentence: { id: number; text: string }[][] = [
         // options for sentence 0
         [
-            { id: 0, text: "Calm" },
-            { id: 1, text: "Anxious" },
-            { id: 2, text: "Neutral" },
-            { id: 3, text: "Stressed" },
-            { id: 4, text: "Unpredictable" }
+            { id: 0, text: "Rarely" },
+            { id: 1, text: "Sometimes" },
+            { id: 2, text: "Often" },
+            { id: 3, text: "Very Often" },
+            { id: 4, text: "Always" }
         ],
         // options for sentence 1
         [
             { id: 0, text: "Rarely" },
-            { id: 1, text: "Rarely, Sometimes, " },
-            { id: 2, text: "Often, Most of the time" }
+            { id: 1, text: "Sometimes " },
+            { id: 2, text: "Often" },
+            { id: 3, text: "Very Often" },
+            { id: 4, text: "Always" },
 
         ],
         // options for sentence 2
         [
-            { id: 0, text: "Reduce stress and anxiety" },
-            { id: 1, text: "Improve my relationships" },
-            { id: 2, text: "Build self-confidence" },
-            { id: 3, text: "Understand myself better" },
-            { id: 4, text: "Stay calm under pressure" }
+            { id: 0, text: "Rarely" },
+            { id: 1, text: "Sometimes" },
+            { id: 2, text: "Often" },
+            { id: 3, text: "Very Often" },
+            { id: 4, text: "Always" }
         ],
         // options for sentence 3
         [
-            { id: 0, text: "Managing my anger" },
-            { id: 1, text: "Expressing empathy to others" },
-            { id: 2, text: "Giving and receiving feedback" },
-            { id: 3, text: "Communicating my needs" },
-            { id: 4, text: "Staying focused and motivated" }
+            { id: 0, text: "Rarely" },
+            { id: 1, text: "Sometimes" },
+            { id: 2, text: "Often" },
+            { id: 3, text: "Very Often" },
+            { id: 4, text: "Always" }
         ],
         // options for sentence 4
         [
-            { id: 0, text: "Mornings" },
-            { id: 1, text: "Afternoons" },
-            { id: 2, text: "Evenings" },
-            { id: 3, text: "Nights" },
+            { id: 0, text: "Rarely" },
+            { id: 1, text: "Sometimes" },
+            { id: 2, text: "Often" },
+            { id: 3, text: "Very Often" },
         ],
         // options for sentence 5
         [
-            { id: 0, text: "Exercise" },
-            { id: 1, text: "Listening to music" },
-            { id: 2, text: "Journaling" },
-            { id: 3, text: "Talking to a friend" },
-            { id: 4, text: "Buzzzzz" }
+            { id: 0, text: "Rarely" },
+            { id: 1, text: "Sometimes" },
+            { id: 2, text: "Often" },
+            { id: 3, text: "Very Often" }
+           
         ]
     ];
 
@@ -112,10 +121,14 @@ function Onboarding() {
                         Next  <ArrowRight />
                     </Button>
                 </div>
-            </div>
+            </div>    
         </div>
+
+        <Slider></Slider>    
+
         <div className="w-full mt-[-175]">
       </div>
+
     </>
   )
 }
