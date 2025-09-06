@@ -10,7 +10,6 @@ import {
   MobileNavToggle,
   MobileNavMenu,
 } from "@/components/ui/resizable-navbar";
-import Link from "next/link";
 import { useState } from "react";
 
 export function NavbarComponent() {
