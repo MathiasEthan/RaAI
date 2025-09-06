@@ -13,7 +13,7 @@ const words : string= "decode your emotions, master your life"
           <TextGenerateEffect words={words} />
         </div>
       </main>
-      <div className="w-full flex justify-center mt-[-80]">
+      <div className="w-full flex justify-center mt-[-90]">
         <div className="flex gap-4">
         <Link href="/onboarding">
           <Button className="bg-accent text-accent-foreground hover:bg-accent/90" aria-label="Get started">
@@ -24,6 +24,14 @@ const words : string= "decode your emotions, master your life"
         Learn more
           </Button>
         </div>
+      </div>
+      <div className="w-full mt-4">
+        <footer className="text-white p-6 text-center rounded-t-lg">
+          <p className="text-sm">&copy; 2025 Ra.AI. All rights reserved.</p>
+          <p className="text-xs mt-1">
+            <Link href="https://www.instagram.com/ethan.spaamm/" className="hover:underline">Contact Us</Link>
+          </p>
+        </footer>
       </div>
     </div>
   );
