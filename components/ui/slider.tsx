@@ -1,4 +1,3 @@
-
 "use client"
 
 import * as React from "react"
@@ -34,7 +33,7 @@ export default function EmojiSlider({ className, ...props }: { className?: strin
         {...props}
       >
         <SliderPrimitive.Track className="relative h-1 w-full grow rounded-full bg-gray-300">
-          <SliderPrimitive.Range className="absolute h-full rounded-full bg-blue-500" />
+          <SliderPrimitive.Range className="relative h-full rounded-full bg-blue-500" />
         </SliderPrimitive.Track>
         <SliderPrimitive.Thumb className="block h-5 w-5 rounded-full bg-white border shadow" />
       </SliderPrimitive.Root>
