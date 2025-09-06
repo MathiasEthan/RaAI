@@ -50,7 +50,7 @@ export const AnimatedTestimonials = ({
             <AnimatePresence>
               {testimonials.map((testimonial, index) => (
                 <motion.div
-                  key={testimonial.src}
+                  key={typeof testimonial.src === "string" ? testimonial.src : testimonial.src.src}
                   initial={{
                     opacity: 0,
                     scale: 0.9,
