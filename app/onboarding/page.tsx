@@ -5,14 +5,15 @@ import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { ArrowLeft } from 'lucide-react';
-function Today() {
+<ArrowLeft />
+function Onboarding() {
     const sentences = [
-        { id: 0, text: "The sun rose over the quiet city." },
-        { id: 1, text: "The sun rose over the quiet city 222." },
-        { id: 2, text: "Coffee steamed in the mug as the first light hit the desk." },
-        { id: 3, text: "A gentle breeze carried the scent of rain from the hills." },
-        { id: 4, text: "She opened her notebook and began to write without thinking." },
-        { id: 5, text: "By noon the market buzzed with colorful stalls and laughter." }
+        { id: 0, text: "How would you describe your emotional state most days" },
+        { id: 1, text: "How often do you find yourself reacting impulsively to difficult situations?" },
+        { id: 2, text: "What is your primary goal for using our platform?" },
+        { id: 3, text: "What emotional skill are you most interested in developing right now?" },
+        { id: 4, text: "What is the most challenging time of day for you, emotionally?" },
+        { id: 5, text: "How do you currently cope with stress?" }
     ];
     const [currentId, setCurrentId] = useState<number>(0);
     const [selected, setSelected] = useState<number>(1);
@@ -23,51 +24,49 @@ function Today() {
     const optionsBySentence: { id: number; text: string }[][] = [
         // options for sentence 0
         [
-            { id: 0, text: "Sunrise over the quiet city" },
-            { id: 1, text: "A soft morning hush" },
-            { id: 2, text: "Dawn paints the rooftops" },
-            { id: 3, text: "First light, slow and warm" },
-            { id: 4, text: "City wakes in amber tones" }
+            { id: 0, text: "Calm" },
+            { id: 1, text: "Anxious" },
+            { id: 2, text: "Neutral" },
+            { id: 3, text: "Stressed" },
+            { id: 4, text: "Unpredictable" }
         ],
         // options for sentence 1
         [
-            { id: 0, text: "Sunrise version two" },
-            { id: 1, text: "Echo of the morning" },
-            { id: 2, text: "Rising light again" },
-            { id: 3, text: "Another quiet dawn" },
-            { id: 4, text: "Soft glow over streets" }
+            { id: 0, text: "Rarely" },
+            { id: 1, text: "Rarely, Sometimes, " },
+            { id: 2, text: "Often, Most of the time" }
+
         ],
         // options for sentence 2
         [
-            { id: 0, text: "Steam curls from the mug" },
-            { id: 1, text: "Coffee and first light" },
-            { id: 2, text: "Warm cup on the desk" },
-            { id: 3, text: "Aromatic morning ritual" },
-            { id: 4, text: "Mug and a fresh page" }
+            { id: 0, text: "Reduce stress and anxiety" },
+            { id: 1, text: "Improve my relationships" },
+            { id: 2, text: "Build self-confidence" },
+            { id: 3, text: "Understand myself better" },
+            { id: 4, text: "Stay calm under pressure" }
         ],
         // options for sentence 3
         [
-            { id: 0, text: "Breeze carries rain scent" },
-            { id: 1, text: "Wind from the hills" },
-            { id: 2, text: "Fresh, rain-tinged air" },
-            { id: 3, text: "A gentle, cool draft" },
-            { id: 4, text: "Hills whisper of showers" }
+            { id: 0, text: "Managing my anger" },
+            { id: 1, text: "Expressing empathy to others" },
+            { id: 2, text: "Giving and receiving feedback" },
+            { id: 3, text: "Communicating my needs" },
+            { id: 4, text: "Staying focused and motivated" }
         ],
         // options for sentence 4
         [
-            { id: 0, text: "Opened notebook, words flow" },
-            { id: 1, text: "She writes without thinking" },
-            { id: 2, text: "Ink spills honest thoughts" },
-            { id: 3, text: "Pages fill in quiet focus" },
-            { id: 4, text: "Thoughts become visible lines" }
+            { id: 0, text: "Mornings" },
+            { id: 1, text: "Afternoons" },
+            { id: 2, text: "Evenings" },
+            { id: 3, text: "Nights" },
         ],
         // options for sentence 5
         [
-            { id: 0, text: "Market hums at noon" },
-            { id: 1, text: "Colorful stalls and laughter" },
-            { id: 2, text: "Noon bustle and bright wares" },
-            { id: 3, text: "A lively afternoon scene" },
-            { id: 4, text: "Vendors call, crowds wander" }
+            { id: 0, text: "Exercise" },
+            { id: 1, text: "Listening to music" },
+            { id: 2, text: "Journaling" },
+            { id: 3, text: "Talking to a friend" },
+            { id: 4, text: "Buzzzzz" }
         ]
     ];
 
@@ -82,7 +81,7 @@ function Today() {
                     key={currentId} // force remount on id change
                     words={sentences.find(s => s.id === currentId)?.text ?? ''}
                 />
-                <div role="radiogroup" aria-label="Generated options" className="flex justify-center mt-20 space-x-2">
+                <div role="radiogroup" aria-label="Generated options" className="flex justify-center mt-20 space-x-4">
                     {options.map((opt, i) => {
                         const btnIndex = i + 1;
                         const isSelected = selected === btnIndex;
@@ -103,12 +102,13 @@ function Today() {
                     <Button variant="ghost"
                         onClick={() => setCurrentId(prev => (prev - 1 + sentences.length) % sentences.length)}
                     >
-                    <ArrowLeft /> Back
+                        <ArrowLeft />Back
                     </Button>
                     <Button
                         onClick={() => setCurrentId(prev => (prev + 1) % sentences.length)}
                     >
-                        Next <ArrowRight />
+                        
+                        Next  <ArrowRight />
                     </Button>
                 </div>
             </div>
@@ -118,4 +118,4 @@ function Today() {
   )
 }
 
-export default Today
+export default Onboarding;

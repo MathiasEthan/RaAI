@@ -3,13 +3,15 @@ import {TextGenerateEffect} from "@/components/ui/text-generate-effect"
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
-const words : string= "decode your emotions, master your life"
+const words : string= "Decode Your Emotions, Master Your Life"
+const description : string= "From self-awareness to social mastery, our platform is your guide to a more connected and resilient you."
   return (
     <div>
       <main className="min-h-screen flex flex-col items-center justify-center mt-[-120]">
+        <TextGenerateEffect words={words} />
         <TextHoverEffect text="Ra.AI" />
         <div className="flex justify-center w-full mt-[-90]">
-          <TextGenerateEffect words={words} />
+          <TextGenerateEffect words={description} />
         </div>
       </main>
       <div className="w-full flex justify-center mt-[-80]">
