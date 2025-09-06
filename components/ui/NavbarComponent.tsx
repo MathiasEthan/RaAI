@@ -18,6 +18,10 @@ export function NavbarComponent() {
       name: "Today",
       link: "today",
     },
+    {
+      name: "Dashboard",
+      link: "dashboard",
+    },
   ];
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

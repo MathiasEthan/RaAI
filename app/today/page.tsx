@@ -80,7 +80,12 @@ function Today() {
                     key={currentId} // force remount on id change
                     words={sentences.find(s => s.id === currentId)?.text ?? ''}
                 />
-                <div role="radiogroup" aria-label="Generated options" className="flex justify-center mt-20 space-x-2">
+                <div
+                    role="radiogroup"
+                    aria-label="Generated options"
+                    className="flex justify-center mt-20 space-x-2"
+                    // assign a unique name for each group
+                >
                     {options.map((opt, i) => {
                         const btnIndex = i + 1;
                         const isSelected = selected === btnIndex;
@@ -89,6 +94,7 @@ function Today() {
                                 key={`${currentId}-${opt.id}`}
                                 role="radio"
                                 aria-checked={isSelected}
+                                name={`options-group-${currentId}`}
                                 variant={isSelected ? "default" : "ghost"}
                                 onClick={() => setSelected(btnIndex)}
                             >
