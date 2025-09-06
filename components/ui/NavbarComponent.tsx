@@ -15,16 +15,8 @@ import { useState } from "react";
 export function NavbarComponent() {
   const navItems = [
     {
-      name: "Features",
-      link: "#features",
-    },
-    {
-      name: "Pricing",
-      link: "#pricing",
-    },
-    {
-      name: "Contact",
-      link: "#contact",
+      name: "Today",
+      link: "today",
     },
   ];
 
@@ -80,7 +72,7 @@ export function NavbarComponent() {
                 variant="primary"
                 className="w-full"
               >
-                Book a call
+                Book a demo
               </NavbarButton>
             </div>
           </MobileNavMenu>

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { NavbarComponent } from "@/components/ui/NavbarComponent";
+import { Spotlight } from "@/components/ui/spotlight-new"
 
 
 
@@ -38,7 +39,7 @@ export default function RootLayout({
       enableSystem
       disableTransitionOnChange
     >
-
+      <Spotlight />
       <NavbarComponent />
       
         {children} 
