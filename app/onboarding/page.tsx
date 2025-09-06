@@ -11,6 +11,7 @@ import  Slider  from '../../components/ui/slider';
 
 
 import Link from 'next/link';
+// import router, { useRouter } from 'next/router';
 
 <ArrowLeft />
 function Onboarding() {
@@ -24,64 +25,98 @@ function Onboarding() {
         { id: 5, text: "How often do you bounce back quickly after experiencing disappointment or failure?" }
     ];
     const [currentId, setCurrentId] = useState<number>(0);
-    const [selected, setSelected] = useState<number>(1);
+    const [selections, setSelections] = useState<number[]>(Array(sentences.length).fill(-1));
 
     // build 5 option objects based on the currentId, wrapping around the sentences array
     // simple editable texts you can modify directly
     // optionsBySentence[i] is an array of 5 option objects for sentence i.
-    const optionsBySentence: { id: number; text: string }[][] = [
+    const optionsBySentence: { id: number; text: string; score:number }[][] = [
         // options for sentence 0
         [
-            { id: 0, text: "Rarely" },
-            { id: 1, text: "Sometimes" },
-            { id: 2, text: "Often" },
-            { id: 3, text: "Very Often" },
-            { id: 4, text: "Always" }
+            { id: 0, text: "Rarely", score:0 },
+            { id: 1, text: "Sometimes",score:0.2 },
+            { id: 2, text: "Often",score:0.4 },
+            { id: 3, text: "Very Often",score:0.6 },
+            { id: 4, text: "Always",score:0.8 }
         ],
         // options for sentence 1
         [
-            { id: 0, text: "Rarely" },
-            { id: 1, text: "Sometimes " },
-            { id: 2, text: "Often" },
-            { id: 3, text: "Very Often" },
-            { id: 4, text: "Always" },
+            { id: 0, text: "Rarely",score:0 },
+            { id: 1, text: "Sometimes ",score:0.2},
+            { id: 2, text: "Often",score:0.4 },
+            { id: 3, text: "Very Often",score:0.6},
+            { id: 4, text: "Always",score:0.8 },
 
         ],
         // options for sentence 2
         [
-            { id: 0, text: "Rarely" },
-            { id: 1, text: "Sometimes" },
-            { id: 2, text: "Often" },
-            { id: 3, text: "Very Often" },
-            { id: 4, text: "Always" }
+            { id: 0, text: "Rarely",score:0 },
+            { id: 1, text: "Sometimes",score:0.2 },
+            { id: 2, text: "Often",score:0.4 },
+            { id: 3, text: "Very Often",score:0.6},
+            { id: 4, text: "Always",score:0.8 }
         ],
         // options for sentence 3
         [
-            { id: 0, text: "Rarely" },
-            { id: 1, text: "Sometimes" },
-            { id: 2, text: "Often" },
-            { id: 3, text: "Very Often" },
-            { id: 4, text: "Always" }
+            { id: 0, text: "Rarely",score:0 },
+            { id: 1, text: "Sometimes",score:0.2 },
+            { id: 2, text: "Often" ,score:0.4},
+            { id: 3, text: "Very Often",score:0.6 },
+            { id: 4, text: "Always",score:0.8}
         ],
         // options for sentence 4
         [
-            { id: 0, text: "Rarely" },
-            { id: 1, text: "Sometimes" },
-            { id: 2, text: "Often" },
-            { id: 3, text: "Very Often" },
+            { id: 0, text: "Rarely",score:0},
+            { id: 1, text: "Sometimes",score:0.2 },
+            { id: 2, text: "Often",score:0.4 },
+            { id: 3, text: "Very Often",score:0.6 },
+            { id: 4, text: "Always",score:0.8},
         ],
         // options for sentence 5
         [
-            { id: 0, text: "Rarely" },
-            { id: 1, text: "Sometimes" },
-            { id: 2, text: "Often" },
-            { id: 3, text: "Very Often" }
+            { id: 0, text: "Rarely",score:0 },
+            { id: 1, text: "Sometimes",score:0.2 },
+            { id: 2, text: "Often",score:0.4 },
+            { id: 3, text: "Very Often",score:0.6 },
+            { id: 4, text: "Always",score:0.8 },
            
         ]
     ];
 
     // pick the 5 options for the current sentence id (wrap if needed)
-    const options = optionsBySentence[currentId % optionsBySentence.length];
+    const isLastQuestion = currentId === sentences.length - 1;
+    const currentSentence = sentences[currentId]?.text;
+    const [isComplete, setIsComplete] = useState(false);
+    const [totalScore, setTotalScore] = useState(0);
+    const options = optionsBySentence[currentId] || [];
+   
+   const handleNext = () => {
+    if (!isLastQuestion) {
+      setCurrentId(prev => prev + 1);
+    } else {
+     
+      let score = selections.reduce((acc, sel, idx) => {
+        if (sel === -1) return acc;
+        return acc + (optionsBySentence[idx][sel]?.score || 0);
+      }, 0);
+      setTotalScore(score);
+      setIsComplete(true);
+
+     
+      localStorage.setItem('onboardingScore', score.toString());
+
+      setTimeout(() => {
+        window.location.href = '/dashboard'
+      }, 2000); 
+    }
+  };
+
+
+    const handleBack = () => {
+        if (currentId > 0) {
+            setCurrentId(prev => prev - 1);
+        }
+    };
 
   return (
     <>
@@ -94,32 +129,32 @@ function Onboarding() {
                 <div role="radiogroup" aria-label="Generated options" className="flex justify-center mt-20 space-x-4">
                     {options.map((opt, i) => {
                         const btnIndex = i + 1;
-                        const isSelected = selected === btnIndex;
+                        const isSelected = selections[currentId] === opt.id;
                         return (
                             <Button
-                                key={`${currentId}-${opt.id}`}
-                                role="radio"
-                                aria-checked={isSelected}
-                                variant={isSelected ? "default" : "ghost"}
-                                onClick={() => setSelected(btnIndex)}
-                            >
+                               key={`${currentId}-${opt.id}`}
+                               role="radio"
+                               aria-checked={selections[currentId] === btnIndex}
+                               variant={selections[currentId] === btnIndex ? "default" : "ghost"}
+                               onClick={() => {
+                                const newSelections = [...selections];
+                                newSelections[currentId] = btnIndex; 
+                                setSelections(newSelections);
+                                }}>
                                 {opt.text}
-                            </Button>
+</Button>
                         );
                     })}
                 </div>
                 <div className="flex justify-center pt-17 space-x-4">
-                    <Button variant="ghost"
-                        onClick={() => setCurrentId(prev => (prev - 1 + sentences.length) % sentences.length)}
-                    >
+
+                     <Button variant="ghost" disabled={currentId === 0} onClick={handleBack}>
                         <ArrowLeft /> Back
                     </Button>
-                    <Button
-                        onClick={() => setCurrentId(prev => (prev + 1) % sentences.length)}
-                    >
-                        
-                        Next  <ArrowRight />
+                    <Button onClick={handleNext} disabled={selections[currentId] === -1}>
+                        {isLastQuestion ? "Finish" : "Next"} <ArrowRight/>
                     </Button>
+
                 </div>
             </div>    
         </div>
