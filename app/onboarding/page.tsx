@@ -115,12 +115,6 @@ function Onboarding() {
             </div>
         </div>
         <div className="w-full mt-[-175]">
-        <footer className="text-white p-6 text-center rounded-t-lg">
-          <p className="text-sm">&copy; 2025 Ra.AI. All rights reserved.</p>
-          <p className="text-xs mt-1">
-            <Link href="https://www.instagram.com/ethan.spaamm/" className="hover:underline">Contact Us</Link>
-          </p>
-        </footer>
       </div>
     </>
   )
