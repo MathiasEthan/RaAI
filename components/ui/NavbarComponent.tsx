@@ -42,8 +42,10 @@ export function NavbarComponent() {
           <NavbarLogo />
           <NavItems items={navItems} />
           <div className="flex items-center gap-4">
-            <NavbarButton variant="secondary">Login</NavbarButton>
-            <NavbarButton variant="primary">Book a demo</NavbarButton>
+            
+            <NavbarButton variant="secondary" href="/login">Login</NavbarButton>
+
+            <NavbarButton variant="primary" >Book a demo</NavbarButton>
           </div>
         </NavBody>
 
@@ -72,13 +74,18 @@ export function NavbarComponent() {
               </a>
             ))}
             <div className="flex w-full flex-col gap-4">
+              
               <NavbarButton
-                onClick={() => setIsMobileMenuOpen(false)}
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                window.location.href = "/login";
+              }}
                 variant="primary"
                 className="w-full"
               >
                 Login
               </NavbarButton>
+
               <NavbarButton
                 onClick={() => setIsMobileMenuOpen(false)}
                 variant="primary"
