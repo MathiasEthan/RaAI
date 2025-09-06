@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/ui/theme-provider";
 import { NavbarComponent } from "@/components/ui/NavbarComponent";
 
 
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -37,7 +38,9 @@ export default function RootLayout({
       enableSystem
       disableTransitionOnChange
     >
+
       <NavbarComponent />
+      
         {children} 
       </ThemeProvider>
       </body>
