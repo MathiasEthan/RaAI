@@ -3,6 +3,7 @@ import React from 'react'
 import { useState } from 'react'
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 function Today() {
     const sentences = [
         { id: 0, text: "The sun rose over the quiet city." },
@@ -117,6 +118,7 @@ function Today() {
                 </div>
             </div>
         </div>
+        
          
     </>
   )
