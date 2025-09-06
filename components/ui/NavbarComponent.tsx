@@ -26,6 +26,10 @@ export function NavbarComponent() {
       name: "Get Started",
       link: "onboarding",
     },
+    {
+      name: "Learn More",
+      link: "learnmore"
+    }
   ];
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
