@@ -91,7 +91,7 @@ function Onboarding() {
       setCurrentId(prev => prev + 1);
     } else {
      
-      let score = selections.reduce((acc, sel, idx) => {
+      const score = selections.reduce((acc, sel, idx) => {
         if (sel === -1) return acc;
         return acc + (optionsBySentence[idx][sel]?.score || 0);
       }, 0);
