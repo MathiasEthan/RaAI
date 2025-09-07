@@ -9,7 +9,7 @@ import { ArrowLeft } from 'lucide-react';
 import  Slider  from '../../components/ui/slider';
 
 
-<ArrowLeft />
+
 function Onboarding() {
     
     const sentences = [
@@ -18,7 +18,8 @@ function Onboarding() {
         { id: 2, text: "How often are you able to stay calm and manage your emotions during stressful or challenging situations?" },
         { id: 3, text: "How often do you communicate your feelings clearly and respectfully to others?" },
         { id: 4, text: "How often do you stay motivated and positive, even when faced with setbacks?" },
-        { id: 5, text: "How often do you bounce back quickly after experiencing disappointment or failure?" }
+        { id: 5, text: "How often do you bounce back quickly after experiencing disappointment or failure?" },
+        { id: 6, text: "Finally, What area do you want to focus on first?" }
     ];
     const [currentId, setCurrentId] = useState<number>(0);
     const [selections, setSelections] = useState<number[]>(Array(sentences.length).fill(-1));
@@ -76,6 +77,14 @@ function Onboarding() {
             { id: 3, text: "Very Often",score:0.6 },
             { id: 4, text: "Always",score:0.8 },
            
+        ],
+        // options for sentence 6
+        [
+            { id: 0, text: "Self Awareness",score:0 },
+            { id: 1, text: "Self Regulation",score:0.2 },
+            { id: 2, text: "Motivation",score:0.4 },
+            { id: 3, text: "Empathy",score:0.6 },
+            { id: 4, text: "Social Skills",score:0.8 },
         ]
     ];
 
@@ -91,14 +100,14 @@ function Onboarding() {
       setCurrentId(prev => prev + 1);
     } else {
      
-      let score = selections.reduce((acc, sel, idx) => {
+      const score = selections.reduce((acc, sel, idx) => {
         if (sel === -1) return acc;
         return acc + (optionsBySentence[idx][sel]?.score || 0);
       }, 0);
       setTotalScore(score);
       setIsComplete(true);
 
-     
+      
       localStorage.setItem('onboardingScore', score.toString());
 
       setTimeout(() => {
