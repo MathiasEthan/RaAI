@@ -103,12 +103,12 @@ export function SectionCards() {
         <CardHeader>
           <CardDescription>Social Skills</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            4.5%
+            4.5
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
               <IconTrendingUp />
-              +4.5
+              +4.5%
             </Badge>
           </CardAction>
         </CardHeader>
