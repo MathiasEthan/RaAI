@@ -3,7 +3,8 @@ import React from 'react'
 import { useState } from 'react'
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+import { ForwardIcon, StepBackIcon } from 'lucide-react';
+
 function Today() {
     const sentences = [
         { id: 0, text: "The sun rose over the quiet city." },
@@ -141,6 +142,7 @@ function Today() {
                     <Button variant="ghost" disabled={currentId === 0}
                         onClick={handleBack}
                     >
+                    <StepBackIcon />
                         Back
                     </Button>
                     <Button
@@ -148,8 +150,13 @@ function Today() {
                     disabled={selections[currentId] === -1}
                        
                     >
+<<<<<<< HEAD
                          {isLastQuestion ? "Finish" : "Next"}
                       
+=======
+                        Next
+                    <ForwardIcon />
+>>>>>>> f53487bd19c561dbd9f2a64f5deb896a5403c2a5
                     </Button>
                 </div>
             </div>
