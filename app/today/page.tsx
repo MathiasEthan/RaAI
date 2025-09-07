@@ -16,13 +16,16 @@ function Today() {
     ];
     const [currentId, setCurrentId] = useState<number>(0);
     const [selections, setSelections] = useState<number[]>(Array(sentences.length).fill(-1));
+
     const [isComplete, setIsComplete] = useState(false);
 
     const isLastQuestion = currentId === sentences.length - 1;
 
+
     // build 5 option objects based on the currentId, wrapping around the sentences array
     // simple editable texts you can modify directly
     // optionsBySentence[i] is an array of 5 option objects for sentence i.
+
     const optionsBySentence: { id: number; text: string }[][] = [
         // options for feeling today
         [
@@ -34,6 +37,7 @@ function Today() {
         ],
         // options for sleep
         [
+
             { id: 0, text: "Slept well" },
             { id: 1, text: "Decent sleep" },
             { id: 2, text: "Could be better" },
@@ -42,6 +46,7 @@ function Today() {
         ],
         // options for energy
         [
+
             { id: 0, text: "Very energetic" },
             { id: 1, text: "Moderately energetic" },
             { id: 2, text: "Average energy" },
@@ -74,8 +79,38 @@ function Today() {
         ]
     ];
 
-    // pick the 5 options for the current sentence id (wrap if needed)
-    const options = optionsBySentence[currentId % optionsBySentence.length];
+    const isLastQuestion = currentId === sentences.length - 1;
+    const currentSentence = sentences[currentId]?.text;
+    const [isComplete, setIsComplete] = useState(false);
+    const [totalScore, setTotalScore] = useState(0);
+    const options = optionsBySentence[currentId] || [];
+
+     const handleBack = () => {
+        if (currentId > 0) {
+            setCurrentId(prev => prev - 1);
+        }
+    };
+
+    const handleNext = () => {
+    if (!isLastQuestion) {
+      setCurrentId(prev => prev + 1);
+    } else {
+     
+      let score = selections.reduce((acc, sel, idx) => {
+        if (sel === -1) return acc;
+        return acc + (optionsBySentence[idx][sel]?.score || 0);
+      }, 0);
+      setTotalScore(score);
+      setIsComplete(true);
+
+     
+      localStorage.setItem('onboardingScore', score.toString());
+
+      setTimeout(() => {
+        window.location.href = '/dashboard'
+      }, 2000); 
+    }
+  };
 
     // Handle answer selection
     const handleSelection = (btnIndex: number) => {
@@ -119,6 +154,8 @@ function Today() {
     return (
         <div className="flex items-center justify-center min-h-screen">
             <div className="w-full max-w-2xl mt-[-50] rounded-lg text-center">
+                    </Button>
+                </div>
                 {isComplete ? (
                     <div className="text-xl font-medium text-green-600 mb-4">
                         Thank you for completing your daily check-in!
