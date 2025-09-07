@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 import { Button } from '@/components/ui/button';
@@ -16,6 +16,9 @@ function Today() {
     ];
     const [currentId, setCurrentId] = useState<number>(0);
     const [selected, setSelected] = useState<number>(1);
+    const [isComplete, setIsComplete] = useState<boolean>(false);
+    const [showDashboard, setShowDashboard] = useState<boolean>(false);
+    const [answers, setAnswers] = useState<Record<number, number>>({});
 
     // build 5 option objects based on the currentId, wrapping around the sentences array
     // simple editable texts you can modify directly
@@ -74,57 +77,96 @@ function Today() {
     // pick the 5 options for the current sentence id (wrap if needed)
     const options = optionsBySentence[currentId % optionsBySentence.length];
 
-  return (
-    <>
-        <div className="flex items-center justify-center min-h-screen">
-            <div className="w-full max-w-2xl mt-[-50] rounded-lg text-center">
-                <TextGenerateEffect
-                    key={currentId} // force remount on id change
-                    words={sentences.find(s => s.id === currentId)?.text ?? ''}
-                />
-                <div
-                    role="radiogroup"
-                    aria-label="Generated options"
-                    className="flex justify-center mt-20 space-x-2"
-                    // assign a unique name for each group
-                >
-                    {options.map((opt, i) => {
-                        const btnIndex = i + 1;
-                        const isSelected = selected === btnIndex;
-                        return (
-                            <Button
-                                key={`${currentId}-${opt.id}`}
-                                role="radio"
-                                aria-checked={isSelected}
-                                name={`options-group-${currentId}`}
-                                variant={isSelected ? "default" : "ghost"}
-                                onClick={() => setSelected(btnIndex)}
-                            >
-                                {opt.text}
-                            </Button>
-                        );
-                    })}
-                </div>
-                <div className="flex justify-center pt-17 space-x-4">
-                    <Button variant="ghost"
-                        onClick={() => setCurrentId(prev => (prev - 1 + sentences.length) % sentences.length)}
-                    >
-                    <StepBackIcon />
-                        Back
-                    </Button>
-                    <Button
-                        onClick={() => setCurrentId(prev => (prev + 1) % sentences.length)}
-                    >
-                        Next
-                    <ForwardIcon />
-                    </Button>
+    // Handle answer selection
+    const handleSelection = (btnIndex: number) => {
+        setSelected(btnIndex);
+        setAnswers(prev => ({ ...prev, [currentId]: btnIndex }));
+    };
+
+    // Check completion and handle timeout
+    useEffect(() => {
+        if (Object.keys(answers).length === sentences.length && !isComplete) {
+            setIsComplete(true);
+            setTimeout(() => {
+                setShowDashboard(true);
+            }, 3000);
+        }
+    }, [answers, isComplete]);
+
+    if (showDashboard) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="w-full max-w-2xl p-6 bg-white rounded-lg shadow-lg">
+                    <h2 className="text-2xl font-bold mb-4">Your Daily Check-in Summary</h2>
+                    {sentences.map((s, index) => (
+                        <div key={s.id} className="mb-4">
+                            <p className="font-medium">{s.text}</p>
+                            <p className="text-gray-600">
+                                {optionsBySentence[index][answers[s.id] - 1]?.text || "Not answered"}
+                            </p>
+                        </div>
+                    ))}
                 </div>
             </div>
-        </div>
-        
-         
-    </>
-  )
+        );
+    }
+
+    return (
+        <>
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="w-full max-w-2xl mt-[-50] rounded-lg text-center">
+                    {isComplete ? (
+                        <div className="text-xl font-medium text-green-600 mb-4">
+                            Thank you for completing your daily check-in!
+                        </div>
+                    ) : (
+                        <>
+                            <TextGenerateEffect
+                                key={currentId}
+                                words={sentences.find(s => s.id === currentId)?.text ?? ''}
+                            />
+                            <div
+                                role="radiogroup"
+                                aria-label="Generated options"
+                                className="flex justify-center mt-20 space-x-2"
+                            >
+                                {options.map((opt, i) => {
+                                    const btnIndex = i + 1;
+                                    const isSelected = selected === btnIndex;
+                                    return (
+                                        <Button
+                                            key={`${currentId}-${opt.id}`}
+                                            role="radio"
+                                            aria-checked={isSelected}
+                                            name={`options-group-${currentId}`}
+                                            variant={isSelected ? "default" : "ghost"}
+                                            onClick={() => handleSelection(btnIndex)}
+                                        >
+                                            {opt.text}
+                                        </Button>
+                                    );
+                                })}
+                            </div>
+                            <div className="flex justify-center pt-17 space-x-4">
+                                <Button variant="ghost"
+                                    onClick={() => setCurrentId(prev => (prev - 1 + sentences.length) % sentences.length)}
+                                >
+                                    <StepBackIcon />
+                                    Back
+                                </Button>
+                                <Button
+                                    onClick={() => setCurrentId(prev => (prev + 1) % sentences.length)}
+                                >
+                                    Next
+                                    <ForwardIcon />
+                                </Button>
+                            </div>
+                        </>
+                    )}
+                </div>
+            </div>
+        </>
+    );
 }
 
 export default Today
