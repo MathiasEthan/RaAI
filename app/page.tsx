@@ -1,7 +1,7 @@
 import { TextHoverEffect } from "@/components/ui/text-hover-effect";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 import { Button } from "@/components/ui/button";
-import { LlmButton } from "@/components/LlmButton";
+
 import Link from "next/link";
 
 export default function Home() {
@@ -32,7 +32,7 @@ export default function Home() {
         </div>
       </div>
       <div className="w-full mt-4"></div>
-      <LlmButton />
+
     </div>
   );
 }

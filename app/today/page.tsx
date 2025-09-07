@@ -15,10 +15,10 @@ function Today() {
         { id: 5, text: "What's your main emotion right now?" }
     ];
     const [currentId, setCurrentId] = useState<number>(0);
-    const [selected, setSelected] = useState<number>(1);
-    const [isComplete, setIsComplete] = useState<boolean>(false);
-    const [showDashboard, setShowDashboard] = useState<boolean>(false);
-    const [answers, setAnswers] = useState<Record<number, number>>({});
+    const [selections, setSelections] = useState<number[]>(Array(sentences.length).fill(-1));
+    const [isComplete, setIsComplete] = useState(false);
+
+    const isLastQuestion = currentId === sentences.length - 1;
 
     // build 5 option objects based on the currentId, wrapping around the sentences array
     // simple editable texts you can modify directly
@@ -79,93 +79,100 @@ function Today() {
 
     // Handle answer selection
     const handleSelection = (btnIndex: number) => {
-        setSelected(btnIndex);
-        setAnswers(prev => ({ ...prev, [currentId]: btnIndex }));
+        const newSelections = [...selections];
+        newSelections[currentId] = btnIndex;
+        setSelections(newSelections);
     };
 
-    // Check completion and handle timeout
+    // Add check for daily completion
     useEffect(() => {
-        if (Object.keys(answers).length === sentences.length && !isComplete) {
-            setIsComplete(true);
-            setTimeout(() => {
-                setShowDashboard(true);
-            }, 3000);
+        const lastCheckIn = localStorage.getItem('lastCheckIn');
+        const today = new Date().toDateString();
+        
+        if (lastCheckIn === today) {
+            // User has already completed today's check-in
+            window.location.href = '/dashboard';
         }
-    }, [answers, isComplete]);
+    }, []);
 
-    if (showDashboard) {
-        return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="w-full max-w-2xl p-6 bg-white rounded-lg shadow-lg">
-                    <h2 className="text-2xl font-bold mb-4">Your Daily Check-in Summary</h2>
-                    {sentences.map((s, index) => (
-                        <div key={s.id} className="mb-4">
-                            <p className="font-medium">{s.text}</p>
-                            <p className="text-gray-600">
-                                {optionsBySentence[index][answers[s.id] - 1]?.text || "Not answered"}
-                            </p>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        );
-    }
+    // Modify completion handler
+    const handleCompletion = () => {
+        setIsComplete(true);
+        // Store completion date and responses
+        localStorage.setItem('lastCheckIn', new Date().toDateString());
+        localStorage.setItem('lastResponses', JSON.stringify(selections));
+        
+        setTimeout(() => {
+            window.location.href = '/dashboard';
+        }, 2000);
+    };
+
+    // Update the button click handler
+    const handleNext = () => {
+        if (!isLastQuestion) {
+            setCurrentId(prev => prev + 1);
+        } else {
+            handleCompletion();
+        }
+    };
 
     return (
-        <>
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="w-full max-w-2xl mt-[-50] rounded-lg text-center">
-                    {isComplete ? (
-                        <div className="text-xl font-medium text-green-600 mb-4">
-                            Thank you for completing your daily check-in!
+        <div className="flex items-center justify-center min-h-screen">
+            <div className="w-full max-w-2xl mt-[-50] rounded-lg text-center">
+                {isComplete ? (
+                    <div className="text-xl font-medium text-green-600 mb-4">
+                        Thank you for completing your daily check-in!
+                    </div>
+                ) : (
+                    <>
+                        <TextGenerateEffect
+                            key={currentId}
+                            words={sentences.find(s => s.id === currentId)?.text ?? ''}
+                        />
+                        <div
+                            role="radiogroup"
+                            aria-label="Generated options"
+                            className="flex justify-center mt-20 space-x-2"
+                        >
+                            {options.map((opt, i) => {
+                                const btnIndex = i + 1;
+                                const isSelected = selections[currentId] === btnIndex;
+                                return (
+                                    <Button
+                                        key={`${currentId}-${opt.id}`}
+                                        role="radio"
+                                        aria-checked={isSelected}
+                                        variant={isSelected ? "default" : "ghost"}
+                                        onClick={() => {
+                                            const newSelections = [...selections];
+                                            newSelections[currentId] = btnIndex;
+                                            setSelections(newSelections);
+                                        }}
+                                    >
+                                        {opt.text}
+                                    </Button>
+                                );
+                            })}
                         </div>
-                    ) : (
-                        <>
-                            <TextGenerateEffect
-                                key={currentId}
-                                words={sentences.find(s => s.id === currentId)?.text ?? ''}
-                            />
-                            <div
-                                role="radiogroup"
-                                aria-label="Generated options"
-                                className="flex justify-center mt-20 space-x-2"
+                        <div className="flex justify-center pt-17 space-x-4">
+                            <Button 
+                                variant="ghost" 
+                                disabled={currentId === 0} 
+                                onClick={() => setCurrentId(prev => prev - 1)}
                             >
-                                {options.map((opt, i) => {
-                                    const btnIndex = i + 1;
-                                    const isSelected = selected === btnIndex;
-                                    return (
-                                        <Button
-                                            key={`${currentId}-${opt.id}`}
-                                            role="radio"
-                                            aria-checked={isSelected}
-                                            name={`options-group-${currentId}`}
-                                            variant={isSelected ? "default" : "ghost"}
-                                            onClick={() => handleSelection(btnIndex)}
-                                        >
-                                            {opt.text}
-                                        </Button>
-                                    );
-                                })}
-                            </div>
-                            <div className="flex justify-center pt-17 space-x-4">
-                                <Button variant="ghost"
-                                    onClick={() => setCurrentId(prev => (prev - 1 + sentences.length) % sentences.length)}
-                                >
-                                    <StepBackIcon />
-                                    Back
-                                </Button>
-                                <Button
-                                    onClick={() => setCurrentId(prev => (prev + 1) % sentences.length)}
-                                >
-                                    Next
-                                    <ForwardIcon />
-                                </Button>
-                            </div>
-                        </>
-                    )}
-                </div>
+                                <StepBackIcon /> Back
+                            </Button>
+                            <Button 
+                                onClick={handleNext} 
+                                disabled={selections[currentId] === -1}
+                            >
+                                {isLastQuestion ? "Finish" : "Next"} <ForwardIcon/>
+                            </Button>
+                        </div>
+                    </>
+                )}
             </div>
-        </>
+        </div>
     );
 }
 
