@@ -77,7 +77,9 @@ function Today() {
 
   const options = optionsBySentence[currentId] || [];
 
-  // Check for daily completion
+  // This useEffect was causing the immediate redirect.
+  // The logic is now correctly handled only within the handleCompletion function.
+  /*
   useEffect(() => {
     const lastCheckIn = localStorage.getItem("lastCheckIn");
     const today = new Date().toDateString();
@@ -86,10 +88,12 @@ function Today() {
       window.location.href = "/dashboard";
     }
   }, []);
+  */
 
   const handleCompletion = () => {
     setIsComplete(true);
     const score = selections.reduce((acc, sel, idx) => {
+      // sel is 1-based index from buttons, need 0-based for array access
       if (sel === -1) return acc;
       return acc + (optionsBySentence[idx][sel - 1]?.score || 0);
     }, 0);
@@ -123,7 +127,7 @@ function Today() {
       <div className="w-full max-w-2xl mt-[-50] rounded-lg text-center">
         {isComplete ? (
           <div className="text-xl font-medium text-green-600 mb-4">
-            Thank you for completing your daily check-in!
+            Thank you for completing your daily check-in! Redirecting...
           </div>
         ) : (
           <>
