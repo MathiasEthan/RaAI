@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import { CardContainer, CardBody, CardItem } from "@/components/ui/3d-card";
+import { CardContainer, CardBody, CardItem } from "@/components/ui/3d-card";
 import { Button } from "@/components/ui/button";
 import { twMerge } from 'tailwind-merge';
 import { BackgroundBeams } from "@/components/ui/BackgroundBeams";
@@ -69,7 +70,7 @@ export const Challenges = () => {
     return (
         <div className="p-8 relative">
             <h1 className="text-center text-5xl font-bold mb-4">Community Challenges</h1>
-            <p className="text-center text-xl text-gray-400 mb-12">Join a challenge and build your emotional wellness streak. Your User ID: {userId}</p>
+            <p className="text-center text-xl text-muted-foreground mb-12">Join a challenge and build your emotional wellness streak. Your User ID: {userId}</p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {challenges.map(challenge => {
                     const userHasJoined = !!userChallenges[challenge.id];
