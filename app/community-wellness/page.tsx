@@ -1,7 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import { CardContainer, CardBody, CardItem } from "@/components/ui/3d-card";
-import { CardContainer, CardBody, CardItem } from "@/components/ui/3d-card";
 import { Button } from "@/components/ui/button";
 import { twMerge } from 'tailwind-merge';
 import { BackgroundBeams } from "@/components/ui/BackgroundBeams";
