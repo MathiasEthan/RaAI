@@ -1,4 +1,5 @@
 import React from 'react'
+import mox from "@/public/mox.jpg"
 import adi from "@/public/adi.jpg"
 import ethan from "@/public/ethan.jpg"
 import muaaz from "@/public/muaaz.jpg"
@@ -6,7 +7,14 @@ import arnav from "@/public/arnav.jpg"
 import { AnimatedTestimonials } from '@/components/ui/animated-testimonials'
 
 function AboutUs() {
-    const weAre = [ {
+    const weAre = [ 
+        {
+            quote: "looking black in that hot dress",
+            name: "Moksh Shah",
+            designation: "moxing it",
+            src: mox.src,
+        },
+        {
       quote:
         "The attention to detail and innovative features have completely transformed our workflow. This is exactly what we've been looking for.",
       name: "Aditya Parameswar",
