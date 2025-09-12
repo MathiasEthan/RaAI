@@ -43,20 +43,20 @@ next-env.d.ts
 
 
 # Backend Gitignore
-/backend/venv/
-/backend/__pycache__/
-/backend/*.py[cod]
-/backend/*.sqlite3
-/backend/*.log
-/backend/*.env
-/backend/*.DS_Store
-/backend/.idea/
-/backend/*.pkl
-/backend/*.egg-info/
-/backend/*.pytest_cache/
-/backend/*.coverage
-/backend/htmlcov/
-/backend/dist/
-/backend/build/
+./backend/venv
+./backend/__pycache__
+./backend/*.py[cod]
+./backend/*.sqlite3
+./backend/*.log
+./backend/*.env
+./backend/*.DS_Store
+./backend/.idea
+./backend/*.pkl
+./backend/*.egg-info
+./backend/*.pytest_cache
+./backend/*.coverage
+./backend/htmlcov
+./backend/dist
+./backend/build
 
 #idk does this work
