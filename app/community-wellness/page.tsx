@@ -67,7 +67,7 @@ export const Challenges = () => {
     }
 
     return (
-        <div className="p-8">
+        <div className="p-8 relative">
             <h1 className="text-center text-5xl font-bold mb-4">Community Challenges</h1>
             <p className="text-center text-xl text-gray-400 mb-12">Join a challenge and build your emotional wellness streak. Your User ID: {userId}</p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -77,23 +77,23 @@ export const Challenges = () => {
                     const canCompleteToday = userHasJoined && userChallenges[challenge.id].lastCompletedDate !== new Date().toISOString().slice(0, 10);
 
                     return (
-                        <CardContainer key={challenge.id} containerClassName="w-full h-full">
-                            <CardBody className="bg-gray-800 text-white rounded-xl shadow-lg border-none flex flex-col justify-between p-6 w-full h-full">
+                        <CardContainer key={challenge.id} containerClassName="w-full h-full p-0">
+                            <CardBody className="bg-card text-card-foreground rounded-xl shadow-lg border border-border flex flex-col justify-between p-6 w-full h-full">
                                 <div>
                                     <CardItem translateZ="50">
                                         <h2 className="text-2xl font-bold">{challenge.title}</h2>
                                     </CardItem>
                                     <CardItem translateZ="60">
-                                        <p className="text-gray-400 mt-2">{challenge.description}</p>
+                                        <p className="text-muted-foreground mt-2">{challenge.description}</p>
                                     </CardItem>
                                     <div className="space-y-4 mt-4">
                                         <CardItem translateZ="40">
-                                            <div className="text-lg font-semibold">Reward: <span className="text-purple-400">{challenge.reward}</span></div>
+                                            <div className="text-lg font-semibold">Reward: <span className="text-primary">{challenge.reward}</span></div>
                                         </CardItem>
                                         <CardItem translateZ="30">
                                             <div className="flex items-center text-lg">
-                                                Your Streak: <span className="ml-2 font-bold text-yellow-400">{userStreak}</span>
-                                                <span className="ml-1 text-yellow-400">🔥</span>
+                                                Your Streak: <span className="ml-2 font-bold text-accent-foreground">{userStreak}</span>
+                                                <span className="ml-1 text-accent-foreground">🔥</span>
                                             </div>
                                         </CardItem>
                                     </div>
@@ -102,7 +102,8 @@ export const Challenges = () => {
                                     {!userHasJoined ? (
                                         <Button
                                             onClick={() => handleJoinChallenge(challenge.id)}
-                                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold"
+                                            className="w-full"
+                                            variant="default"
                                         >
                                             Join Challenge
                                         </Button>
@@ -111,9 +112,10 @@ export const Challenges = () => {
                                             onClick={() => handleCompleteDay(challenge.id)}
                                             disabled={!canCompleteToday}
                                             className={cn(
-                                                "w-full font-bold",
-                                                canCompleteToday ? "bg-green-600 hover:bg-green-700 text-white" : "bg-gray-700 text-gray-500 cursor-not-allowed"
+                                                "w-full",
+                                                canCompleteToday ? "" : "opacity-50 cursor-not-allowed"
                                             )}
+                                            variant={canCompleteToday ? "default" : "secondary"}
                                         >
                                             {canCompleteToday ? "Complete Today" : "Completed!"}
                                         </Button>
@@ -124,7 +126,7 @@ export const Challenges = () => {
                     );
                 })}
             </div>
-            <BackgroundBeams className="absolute top-0 left-0 w-full h-full z-0" />
+            <BackgroundBeams className="absolute top-0 left-0 w-full h-full -z-10 pointer-events-none" />
         </div>
     );
 };

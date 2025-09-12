@@ -51,7 +51,7 @@ export const BackgroundBeams = ({
       )}
     >
       <svg
-        className="absolute inset-0 w-full h-full"
+        className="absolute inset-0 w-full h-full pointer-events-none"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         preserveAspectRatio="none"
