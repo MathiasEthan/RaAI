@@ -40,3 +40,27 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
+# Backend Gitignore
+backend/venv/
+backend/**/__pycache__/
+backend/**/*.py[cod]
+backend/**/*.so
+backend/**/*.sqlite3
+backend/**/*.db
+backend/logs/
+backend/**/*.log
+backend/**/.env
+backend/**/.env.*
+backend/**/.DS_Store
+backend/**/.idea/
+backend/**/*.pkl
+backend/**/*.egg-info/
+backend/**/.pytest_cache/
+backend/**/.coverage
+backend/**/htmlcov/
+backend/**/dist/
+backend/**/build/
+
+#idk does this work
