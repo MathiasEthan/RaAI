@@ -29,6 +29,10 @@ export function NavbarComponent() {
     {
       name: "Learn More",
       link: "learnmore"
+    }, 
+    {
+      name: "Rewriter",
+      link: "collab-rewriter"
     }
   ];
 
