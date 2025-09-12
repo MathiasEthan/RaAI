@@ -33,6 +33,10 @@ export function NavbarComponent() {
     {
       name:"Mood Index",
       link:"moodindex"
+    }, 
+    {
+      name: "Rewriter",
+      link: "collab-rewriter"
     }
 
   ];
