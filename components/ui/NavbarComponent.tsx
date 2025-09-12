@@ -27,8 +27,8 @@ export function NavbarComponent() {
       link: "onboarding",
     },
     {
-      name: "Learn More",
-      link: "learnmore"
+      name: "Community Wellness",
+      link: "community-wellness"
     },
     {
       name:"Mood Index",
