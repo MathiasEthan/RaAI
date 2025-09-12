@@ -1,173 +1,154 @@
-'use client'
-import React, { useState } from 'react'
-import { Card } from "@/components/ui/card"
-import { Textarea } from "@/components/ui/textarea"
+"use client";
 
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent
-} from "@/components/ui/chart"
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid
-} from "recharts";
+import React, { useState, useEffect, useRef, FormEvent, memo } from 'react';
+import { Loader2, Send } from 'lucide-react';
+import { cn } from "@/lib/utils";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ScrollArea } from "@/components/ui/scrollarea";
 
-type MoodEntry = {
-  date: string; // storing ISO string since you’re saving via toISOString()
-  score: number;
+interface Message {
+  id: string;
+  text: string;
+  senderId: string;
+  timestamp: Date;
+}
+
+const USER_ID = 'user123';
+const BOT_ID = 'bot';
+const BOT_GREETING: Message = {
+  id: '1',
+  text: 'Hello! How are you feeling today?',
+  senderId: BOT_ID,
+  timestamp: new Date(),
 };
 
-const MoodIndexPage = () => {
+const ChatMessage = memo(({ message, isCurrentUser }: { message: Message; isCurrentUser: boolean }) => {
+  const senderName = isCurrentUser ? 'You' : message.senderId;
+  const avatarFallback = senderName.slice(0, 2).toUpperCase();
 
-    const [moodInput, setMoodInput] = useState("");
-  const [weeklyMoods, setWeeklyMoods] = useState<MoodEntry[]>([]);
+  return (
+    <div
+      className={cn(
+        "flex items-end gap-3",
+        isCurrentUser && "justify-end"
+      )}
+    >
+      {!isCurrentUser && (
+        <Avatar className="h-8 w-8">
+          <AvatarFallback>{avatarFallback}</AvatarFallback>
+        </Avatar>
+      )}
+      <div
+        className={cn(
+          "max-w-[80%] flex flex-col rounded-xl p-3",
+          isCurrentUser
+            ? "bg-blue-600 text-white rounded-br-none"
+            : "bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-gray-50 rounded-bl-none"
+        )}
+      >
+        <p className="text-sm">{message.text}</p>
+        <p className="text-xs mt-1 self-end opacity-70">
+          {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        </p>
+      </div>
+      {isCurrentUser && (
+        <Avatar className="h-8 w-8">
+          <AvatarFallback>{avatarFallback}</AvatarFallback>
+        </Avatar>
+      )}
+    </div>
+  );
+});
+ChatMessage.displayName = 'ChatMessage';
+
+
+const MoodIndex = () => {
+  const [messages, setMessages] = useState<Message[]>([BOT_GREETING]);
+  const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-   
-      
- 
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Format weekly data for chart
-  const formatDataForChart = () => {
-    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const today = new Date();
-    const data = [];
-
-    // Start of current week (Monday)
-    const dayOfWeek = today.getDay();
-    const startOfWeek = new Date(today);
-    if (dayOfWeek === 0) {
-      startOfWeek.setDate(today.getDate() - 6);
-    } else {
-      startOfWeek.setDate(today.getDate() - dayOfWeek + 1);
+  useEffect(() => {
+    const lastMessage = messages[messages.length - 1];
+    // Only scroll down if the last message was from the current user.
+    // This prevents the view from scrolling down on a bot response.
+    if (lastMessage?.senderId === USER_ID) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
+  }, [messages]);
 
-    for (let i = 0; i < 7; i++) {
-      const date = new Date(startOfWeek);
-      date.setDate(startOfWeek.getDate() + i);
+  useEffect(() => {
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage?.senderId === USER_ID) {
+      setLoading(true);
+      const timer = setTimeout(() => {
+        const botResponse: Message = {
+          id: Date.now().toString(),
+          text: "Thank you for sharing that. I'm here to listen whenever you need.",
+          senderId: BOT_ID,
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, botResponse]);
+        setLoading(false);
+      }, 1500); // 1.5-second delay
 
-      const mood = weeklyMoods.find(m => {
-        const moodDate = new Date(m.date);
-        return (
-          moodDate.getDate() === date.getDate() &&
-          moodDate.getMonth() === date.getMonth()
-        );
-      });
-
-      data.push({
-        day: dayNames[date.getDay()],
-        score: mood ? mood.score : null,
-      });
+      return () => clearTimeout(timer);
     }
-    return data;
-  };
+  }, [messages]);
 
-  // Handle user input submit
-  const handleSubmit = async () => {
-    if (moodInput.trim() === "") {
-      setError("Please enter your vibe for the day.");
-      return;
-    }
+  const handleSendMessage = (e: FormEvent) => {
+    e.preventDefault();
+    if (input.trim() === '' || loading) return;
 
-    setLoading(true);
-    setError(null);
+    const newMessage: Message = {
+      id: Date.now().toString(),
+      text: input,
+      senderId: USER_ID,
+      timestamp: new Date(),
+    };
 
-    try {
-      const res = await fetch("http://localhost:8000/ai/mood-score", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: moodInput }),
-      });
-
-      if (!res.ok) throw new Error("Failed to fetch mood score");
-
-      const data = await res.json();
-
-      // Save today's mood
-      const newMood = {
-        date: new Date().toISOString(),
-        score: data.score,
-      };
-
-      setWeeklyMoods(prev => [...prev, newMood]);
-      setMoodInput("");
-    } catch (err) {
-      console.error(err);
-      setError("Something went wrong while fetching mood score.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const chartConfig = {
-    score: {
-      label: "Mood Score",
-      color: "hsl(var(--chart-1))",
-    },
+    setMessages((prev) => [...prev, newMessage]);
+    setInput('');
   };
 
   return (
-    <>
-      
-      <h2>Vibe of the day....</h2>
-      <Textarea
-        className="mdindex-txtarea"
-        value={moodInput}
-        onChange={(e) => setMoodInput(e.target.value)}
-      ></Textarea>
-      <button
-        className="mdindex-submit-btn"
-        onClick={handleSubmit}
-        disabled={loading}
-      >
-        {loading ? "Analyzing..." : "Submit"}
-      </button>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      {weeklyMoods.length > 0 && (
-        <Card className="w-full max-w-md mt-6 p-6 space-y-4">
-          <h3 className="text-xl font-semibold text-center">
-            Your Weekly Mood Tracker
-          </h3>
-          <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-            <LineChart
-              data={formatDataForChart()}
-              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-            >
-              <CartesianGrid vertical={false} />
-              <XAxis dataKey="day" tickLine={false} axisLine={false} />
-              <YAxis domain={[0, 10]} hide />
-              <ChartTooltip content={<ChartTooltipContent />} />
-              <Line
-                type="monotone"
-                dataKey="score"
-                stroke="var(--color-score)"
-                strokeWidth={2}
-                dot={{
-                  r: 6,
-                  fill: "var(--color-score)",
-                  strokeWidth: 2,
-                }}
-                activeDot={{
-                  r: 8,
-                  fill: "var(--color-score)",
-                  stroke: "var(--color-score)",
-                  strokeWidth: 4,
-                }}
-                connectNulls={true}
+    <div className="flex flex-col h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-50 font-sans">
+      <div className="flex-1 overflow-hidden p-4 flex flex-col items-center">
+        <div className="w-full max-w-4xl h-full flex flex-col rounded-xl shadow-md bg-gray-50 dark:bg-gray-900">
+          <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-t-xl border-b border-gray-200 dark:border-gray-700">
+            <h1 className="text-lg font-semibold text-center">Mood Journal</h1>
+          </div>
+          <div className="flex-1 p-4 overflow-hidden">
+            <ScrollArea className="h-full">
+              <div className="flex flex-col space-y-4 pr-4">
+                {messages.map((msg) => (
+                  <ChatMessage key={msg.id} message={msg} isCurrentUser={msg.senderId === USER_ID} />
+                ))}
+                <div ref={messagesEndRef} />
+              </div>
+            </ScrollArea>
+          </div>
+          <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+            <form onSubmit={handleSendMessage} className="flex w-full items-center space-x-2">
+              <Input
+                placeholder="Type your message..."
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                disabled={loading}
+                className="flex-1 bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600"
               />
-            </LineChart>
-          </ChartContainer>
-        </Card>
-      )}
-    </>
-  )
-}
+              <Button size="icon" type="submit" disabled={loading || input.trim() === ''} className="flex-shrink-0">
+                {loading ? <Loader2 className="animate-spin" /> : <Send size={20} />}
+              </Button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-export default MoodIndexPage
+export default MoodIndex;
