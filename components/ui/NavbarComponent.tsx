@@ -43,10 +43,6 @@ export function NavbarComponent() {
       name: "Rewriter",
       link: "collab-rewriter"
     },
-    {
-      name: "Get Started",
-      link: "onboarding",
-    }
   ];
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

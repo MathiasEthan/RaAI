@@ -3,6 +3,12 @@ import React, { useState } from 'react'
 import { Card } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
+import { 
+  IconSos, 
+  IconPhone, 
+  IconMessage, 
+  IconAlertTriangle 
+} from "@tabler/icons-react"
 
 import {
   ChartContainer,
@@ -170,8 +176,9 @@ const MoodIndexPage = () => {
 
       {/* Crisis Support Section */}
       <div className="w-full max-w-md mt-8 p-6 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg">
-        <h3 className="text-lg font-semibold text-red-800 dark:text-red-200 mb-3 text-center">
-          🆘 Need Support?
+        <h3 className="text-lg font-semibold text-red-800 dark:text-red-200 mb-3 text-center flex items-center justify-center gap-2">
+          <IconSos className="h-5 w-5" />
+          Need Support?
         </h3>
         <p className="text-sm text-red-700 dark:text-red-300 mb-4 text-center">
           If you&apos;re struggling, help is available 24/7
@@ -181,27 +188,31 @@ const MoodIndexPage = () => {
             <Button 
               variant="outline" 
               size="sm"
-              className="border-red-300 text-red-700 hover:bg-red-100 dark:border-red-700 dark:text-red-300"
+              className="border-red-300 text-red-700 hover:bg-red-100 dark:border-red-700 dark:text-red-300 flex items-center gap-2"
               onClick={() => window.open('tel:988', '_blank')}
             >
-              📞 Call 988 Crisis Line
+              <IconPhone className="h-4 w-4" />
+              Call 988 Crisis Line
             </Button>
             <Button 
               variant="outline" 
               size="sm"
-              className="border-red-300 text-red-700 hover:bg-red-100 dark:border-red-700 dark:text-red-300"
+              className="border-red-300 text-red-700 hover:bg-red-100 dark:border-red-700 dark:text-red-300 flex items-center gap-2"
               onClick={() => window.open('sms:741741', '_blank')}
             >
-              💬 Text HOME to 741741
+              <IconMessage className="h-4 w-4" />
+              Text HOME to 741741
             </Button>
           </div>
           <div className="text-center">
             <Button 
               size="sm" 
               variant="destructive"
+              className="flex items-center gap-2"
               onClick={() => window.open('tel:911', '_blank')}
             >
-              🚨 Emergency: Call 911
+              <IconAlertTriangle className="h-4 w-4" />
+              Emergency: Call 911
             </Button>
           </div>
         </div>

@@ -5,7 +5,21 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { Mic, Camera, Brain, MessageCircle, Target } from "lucide-react"
+import { 
+  IconEdit, 
+  IconMicrophone, 
+  IconPhoto, 
+  IconBrain, 
+  IconMoodHappy, 
+  IconChartBar, 
+  IconTarget, 
+  IconBulb, 
+  IconSparkles, 
+  IconPlayerPlay, 
+  IconRefresh, 
+  IconDeviceFloppy,
+  IconRobot
+} from "@tabler/icons-react"
 import Link from "next/link"
 
 interface AnalysisResult {
@@ -79,8 +93,8 @@ export default function JournalPage() {
       <Card>
         <CardHeader className="text-center">
           <div className="flex items-center justify-center gap-2 mb-2">
-            <MessageCircle className="h-6 w-6 text-blue-500" />
-            <CardTitle className="text-2xl">📝 Daily Reflection</CardTitle>
+            <IconEdit className="h-6 w-6 text-blue-500" />
+            <CardTitle className="text-2xl">Daily Reflection</CardTitle>
           </div>
           <CardDescription>
             Share your thoughts and get AI-powered emotional insights
@@ -106,8 +120,8 @@ export default function JournalPage() {
                 size="sm"
                 className="flex items-center gap-2"
               >
-                <Mic className="h-4 w-4" />
-                🎙️ Voice Note
+                <IconMicrophone className="h-4 w-4" />
+                Voice Note
               </Button>
               <Button
                 onClick={handlePhotoAttachment}
@@ -115,16 +129,16 @@ export default function JournalPage() {
                 size="sm"
                 className="flex items-center gap-2"
               >
-                <Camera className="h-4 w-4" />
-                📸 Add Photo
+                <IconPhoto className="h-4 w-4" />
+                Add Photo
               </Button>
               <Button
                 onClick={handleAnalyze}
                 disabled={!journalText.trim() || isAnalyzing}
                 className="flex items-center gap-2"
               >
-                <Brain className="h-4 w-4" />
-                {isAnalyzing ? "Analyzing..." : "🎯 Analyze"}
+                <IconBrain className="h-4 w-4" />
+                {isAnalyzing ? "Analyzing..." : "Analyze"}
               </Button>
             </div>
           </div>
@@ -134,15 +148,16 @@ export default function JournalPage() {
             <Card className="border-2 border-blue-200 dark:border-blue-800">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Brain className="h-5 w-5 text-blue-500" />
-                  🤖 AI Analysis
+                  <IconRobot className="h-5 w-5 text-blue-500" />
+                  AI Analysis
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Emotions Detected */}
                 <div className="space-y-3">
                   <h4 className="font-medium flex items-center gap-2">
-                    😤 Emotions Detected
+                    <IconMoodHappy className="h-4 w-4" />
+                    Emotions Detected
                   </h4>
                   <div className="space-y-2">
                     {analysis.emotions.map((emotion, index) => (
@@ -167,7 +182,10 @@ export default function JournalPage() {
                 {/* Sentiment & Focus */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <h4 className="font-medium">📊 Overall Sentiment</h4>
+                    <h4 className="font-medium flex items-center gap-2">
+                      <IconChartBar className="h-4 w-4" />
+                      Overall Sentiment
+                    </h4>
                     <div className="flex items-center gap-2">
                       <Badge 
                         variant="outline" 
@@ -182,14 +200,20 @@ export default function JournalPage() {
                   </div>
                   
                   <div className="space-y-2">
-                    <h4 className="font-medium">🎯 Recommended Focus</h4>
+                    <h4 className="font-medium flex items-center gap-2">
+                      <IconTarget className="h-4 w-4" />
+                      Recommended Focus
+                    </h4>
                     <Badge variant="secondary">{analysis.focus}</Badge>
                   </div>
                 </div>
 
                 {/* Patterns Identified */}
                 <div className="space-y-3">
-                  <h4 className="font-medium">💡 Patterns Identified</h4>
+                  <h4 className="font-medium flex items-center gap-2">
+                    <IconBulb className="h-4 w-4" />
+                    Patterns Identified
+                  </h4>
                   <ul className="space-y-1">
                     {analysis.patterns.map((pattern, index) => (
                       <li key={index} className="text-sm text-muted-foreground flex items-start gap-2">
@@ -202,7 +226,10 @@ export default function JournalPage() {
 
                 {/* Recommendations */}
                 <div className="space-y-3">
-                  <h4 className="font-medium">✨ Recommendations</h4>
+                  <h4 className="font-medium flex items-center gap-2">
+                    <IconSparkles className="h-4 w-4" />
+                    Recommendations
+                  </h4>
                   <div className="space-y-2">
                     {analysis.recommendations.map((rec, index) => (
                       <div key={index} className="p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
@@ -216,8 +243,8 @@ export default function JournalPage() {
                 <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t">
                   <Link href="/exercise" className="flex-1">
                     <Button className="w-full flex items-center gap-2">
-                      <Target className="h-4 w-4" />
-                      ▶️ Start Exercise
+                      <IconPlayerPlay className="h-4 w-4" />
+                      Start Exercise
                     </Button>
                   </Link>
                   <Button 
@@ -225,7 +252,8 @@ export default function JournalPage() {
                     className="flex-1"
                     onClick={handleAnalyze}
                   >
-                    🔄 Re-analyze
+                    <IconRefresh className="h-4 w-4 mr-2" />
+                    Re-analyze
                   </Button>
                 </div>
               </CardContent>
@@ -246,8 +274,10 @@ export default function JournalPage() {
                 alert("Journal entry saved!")
               }}
               disabled={!journalText.trim()}
+              className="flex items-center gap-2"
             >
-              💾 Save Entry
+              <IconDeviceFloppy className="h-4 w-4" />
+              Save Entry
             </Button>
           </div>
         </CardContent>

@@ -5,6 +5,7 @@ import { CardContainer, CardBody, CardItem } from "@/components/ui/3d-card";
 import { Button } from "@/components/ui/button";
 import { twMerge } from 'tailwind-merge';
 import { BackgroundBeams } from "@/components/ui/BackgroundBeams";
+import { IconFlame } from "@tabler/icons-react";
 
 // Define the shape of our data
 interface Challenge {
@@ -118,7 +119,7 @@ const Challenges = () => {
                                     <CardItem translateZ="30" className="w-full mt-2 mb-6">
                                         <div className="flex items-center text-lg">
                                             Your Streak: <span className="ml-2 font-bold text-yellow-400">{userStreak}</span>
-                                            <span className="ml-1 text-yellow-400">🔥</span>
+                                            <IconFlame className="ml-1 h-5 w-5 text-yellow-400" />
                                         </div>
                                     </CardItem>
                                     <CardItem

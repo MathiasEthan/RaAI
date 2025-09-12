@@ -5,7 +5,22 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { Play, Pause, Square, RotateCcw } from "lucide-react"
+import { 
+  IconBrain, 
+  IconClock,
+  IconCircle,
+  IconMusic,
+  IconDeviceMobile,
+  IconPlayerPause,
+  IconPlayerPlay,
+  IconPlayerStop,
+  IconRefresh,
+  IconCircleCheck,
+  IconMoodHappy,
+  IconBulb,
+  IconChartBar,
+  IconBook
+} from "@tabler/icons-react"
 import Link from "next/link"
 
 interface Exercise {
@@ -20,7 +35,7 @@ interface Exercise {
 const exercises: Exercise[] = [
   {
     id: 'box-breathing',
-    title: '🫁 Box Breathing',
+    title: 'Box Breathing',
     category: 'Self-Regulation',
     duration: 120, // 2 minutes in seconds
     description: 'A calming breathing technique to help manage stress and anxiety',
@@ -34,7 +49,7 @@ const exercises: Exercise[] = [
   },
   {
     id: 'perspective-taking',
-    title: '🤔 Perspective Taking',
+    title: 'Perspective Taking',
     category: 'Empathy',
     duration: 180, // 3 minutes
     description: 'Practice understanding situations from different viewpoints',
@@ -48,7 +63,7 @@ const exercises: Exercise[] = [
   },
   {
     id: 'gratitude-practice',
-    title: '🙏 Gratitude Practice',
+    title: 'Gratitude Practice',
     category: 'Self-Awareness',
     duration: 300, // 5 minutes
     description: 'Cultivate appreciation and positive emotions',
@@ -160,8 +175,9 @@ export default function ExercisePage() {
         <Card>
           <CardHeader className="text-center">
             <CardTitle className="text-2xl">{selectedExercise.title}</CardTitle>
-            <CardDescription>
-              ⏱️ {Math.floor(selectedExercise.duration / 60)} minutes • {selectedExercise.category}
+            <CardDescription className="flex items-center gap-2">
+              <IconClock className="h-4 w-4" />
+              {Math.floor(selectedExercise.duration / 60)} minutes • {selectedExercise.category}
             </CardDescription>
           </CardHeader>
           
@@ -169,15 +185,16 @@ export default function ExercisePage() {
             {/* Exercise Visual */}
             <div className="flex flex-col items-center space-y-4">
               <div className="w-32 h-32 rounded-full border-4 border-blue-500 flex items-center justify-center text-4xl">
-                ⭕
+                <IconCircle className="h-16 w-16 text-blue-500" />
               </div>
               
               <div className="text-center">
                 <div className="text-2xl font-bold">
                   {selectedExercise.steps[Math.min(currentStep, selectedExercise.steps.length - 1)]}
                 </div>
-                <div className="text-lg text-muted-foreground mt-2">
-                  ⏱️ {formatTime(timeRemaining)} / {formatTime(selectedExercise.duration)}
+                <div className="text-lg text-muted-foreground mt-2 flex items-center gap-2">
+                  <IconClock className="h-4 w-4" />
+                  {formatTime(timeRemaining)} / {formatTime(selectedExercise.duration)}
                 </div>
               </div>
               
@@ -200,10 +217,12 @@ export default function ExercisePage() {
               <CardContent className="p-4">
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-sm">
-                    <span>🎵 Background: Nature sounds</span>
+                    <IconMusic className="h-4 w-4" />
+                    <span>Background: Nature sounds</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm">
-                    <span>📱 Haptic: Gentle vibration</span>
+                    <IconDeviceMobile className="h-4 w-4" />
+                    <span>Haptic: Gentle vibration</span>
                   </div>
                 </div>
               </CardContent>
@@ -216,8 +235,8 @@ export default function ExercisePage() {
                 size="lg"
                 className="flex items-center gap-2"
               >
-                {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-                {isPlaying ? '⏸️ Pause' : '▶️ Play'}
+                {isPlaying ? <IconPlayerPause className="h-4 w-4" /> : <IconPlayerPlay className="h-4 w-4" />}
+                {isPlaying ? 'Pause' : 'Play'}
               </Button>
               <Button
                 onClick={stopExercise}
@@ -225,8 +244,8 @@ export default function ExercisePage() {
                 size="lg"
                 className="flex items-center gap-2"
               >
-                <Square className="h-4 w-4" />
-                ⏹️ Stop
+                <IconPlayerStop className="h-4 w-4" />
+                Stop
               </Button>
               <Button
                 onClick={resetExercise}
@@ -234,8 +253,8 @@ export default function ExercisePage() {
                 size="lg"
                 className="flex items-center gap-2"
               >
-                <RotateCcw className="h-4 w-4" />
-                🔄 Reset
+                <IconRefresh className="h-4 w-4" />
+                Reset
               </Button>
             </div>
           </CardContent>
@@ -249,15 +268,19 @@ export default function ExercisePage() {
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         <Card>
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl">✅ Exercise Complete!</CardTitle>
+            <CardTitle className="text-2xl flex items-center justify-center gap-2">
+              <IconCircleCheck className="h-6 w-6 text-green-500" />
+              Exercise Complete!
+            </CardTitle>
             <CardDescription>
               Great job completing {selectedExercise.title}
             </CardDescription>
           </CardHeader>
           
           <CardContent className="space-y-6">
-            <div className="text-center text-lg">
-              🎉 Well done! How do you feel now?
+            <div className="text-center text-lg flex items-center justify-center gap-2">
+              <IconMoodHappy className="h-6 w-6 text-yellow-500" />
+              Well done! How do you feel now?
             </div>
             
             {/* Before/After Rating */}
@@ -308,7 +331,10 @@ export default function ExercisePage() {
             {/* Reflection */}
             {afterRating !== null && (
               <div className="space-y-3">
-                <p className="font-medium">💭 Quick reflection:</p>
+                <p className="font-medium flex items-center gap-2">
+                  <IconBulb className="h-4 w-4" />
+                  Quick reflection:
+                </p>
                 <p className="text-sm text-muted-foreground">
                   What changed in your body during this exercise?
                 </p>
@@ -326,23 +352,26 @@ export default function ExercisePage() {
               <Button 
                 onClick={logProgress}
                 disabled={afterRating === null}
-                className="flex-1"
+                className="flex-1 flex items-center gap-2"
               >
-                📊 Log Progress
+                <IconChartBar className="h-4 w-4" />
+                Log Progress
               </Button>
               <Button 
                 onClick={resetExercise}
                 variant="outline"
-                className="flex-1"
+                className="flex-1 flex items-center gap-2"
               >
-                🔄 Repeat
+                <IconRefresh className="h-4 w-4" />
+                Repeat
               </Button>
             </div>
             
             <div className="text-center">
               <Link href="/community-wellness">
-                <Button variant="ghost">
-                  📚 Related Exercises
+                <Button variant="ghost" className="flex items-center gap-2">
+                  <IconBook className="h-4 w-4" />
+                  Related Exercises
                 </Button>
               </Link>
             </div>
@@ -356,7 +385,10 @@ export default function ExercisePage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold mb-2">🧘 Guided Exercises</h1>
+        <h1 className="text-3xl font-bold mb-2 flex items-center justify-center gap-2">
+          <IconBrain className="h-8 w-8 text-blue-500" />
+          Guided Exercises
+        </h1>
         <p className="text-muted-foreground">
           Choose an exercise to practice emotional intelligence skills
         </p>
@@ -370,8 +402,9 @@ export default function ExercisePage() {
                 <CardTitle className="text-lg">{exercise.title}</CardTitle>
                 <Badge variant="secondary">{exercise.category}</Badge>
               </div>
-              <CardDescription>
-                ⏱️ {Math.floor(exercise.duration / 60)} min • {exercise.description}
+              <CardDescription className="flex items-center gap-2">
+                <IconClock className="h-4 w-4" />
+                {Math.floor(exercise.duration / 60)} min • {exercise.description}
               </CardDescription>
             </CardHeader>
             
@@ -393,9 +426,10 @@ export default function ExercisePage() {
               
               <Button 
                 onClick={() => startExercise(exercise)}
-                className="w-full"
+                className="w-full flex items-center gap-2"
               >
-                ▶️ Start Exercise
+                <IconPlayerPlay className="h-4 w-4" />
+                Start Exercise
               </Button>
             </CardContent>
           </Card>
