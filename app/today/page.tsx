@@ -184,4 +184,4 @@ function Today() {
   );
 }
 
-export default Today;
+export default Today
