@@ -1,29 +1,173 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
+import { Card } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
-import { BackgroundBeams } from '@/components/ui/BackgroundBeams' 
+
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent
+} from "@/components/ui/chart"
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid
+} from "recharts";
+
+
+type MoodEntry = {
+  date: string; // storing ISO string since you’re saving via toISOString()
+  score: number;
+};
 
 const MoodIndexPage = () => {
-    return (
-        <div className="h-screen w-full relative flex flex-col items-center justify-center antialiased">
-            <div className="relative z-10 w-full max-w-2xl mx-auto px-4 pt-20 mb-20">
-                <h2 className="text-3xl md:text-5xl font-bold mb-10 text-center bg-gradient-to-r from-purple-400 to-indigo-600 text-transparent bg-clip-text">
-                    Vibe of the day....
-                </h2>
-                <Textarea
-                    className="mdindex-txtarea w-full min-h-[200px] border border-gray-700 bg-gray-900 text-white rounded-xl p-4 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
-                    placeholder="How are you feeling today?"
-                ></Textarea>
-                <div className="flex justify-center mt-6">
-                    <button
-                        className="mdindex-submit-btn px-8 py-3 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-                    >
-                        Submit
-                    </button>
-                </div>
-            </div>
-            <BackgroundBeams className="absolute top-0 left-0 w-full h-full z-0" />
-        </div>
-    )
+
+    const [moodInput, setMoodInput] = useState("");
+  const [weeklyMoods, setWeeklyMoods] = useState<MoodEntry[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+   
+      
+ 
+
+  // Format weekly data for chart
+  const formatDataForChart = () => {
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const today = new Date();
+    const data = [];
+
+    // Start of current week (Monday)
+    const dayOfWeek = today.getDay();
+    const startOfWeek = new Date(today);
+    if (dayOfWeek === 0) {
+      startOfWeek.setDate(today.getDate() - 6);
+    } else {
+      startOfWeek.setDate(today.getDate() - dayOfWeek + 1);
+    }
+
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(startOfWeek);
+      date.setDate(startOfWeek.getDate() + i);
+
+      const mood = weeklyMoods.find(m => {
+        const moodDate = new Date(m.date);
+        return (
+          moodDate.getDate() === date.getDate() &&
+          moodDate.getMonth() === date.getMonth()
+        );
+      });
+
+      data.push({
+        day: dayNames[date.getDay()],
+        score: mood ? mood.score : null,
+      });
+    }
+    return data;
+  };
+
+  // Handle user input submit
+  const handleSubmit = async () => {
+    if (moodInput.trim() === "") {
+      setError("Please enter your vibe for the day.");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await fetch("http://localhost:8000/ai/mood-score", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: moodInput }),
+      });
+
+      if (!res.ok) throw new Error("Failed to fetch mood score");
+
+      const data = await res.json();
+
+      // Save today's mood
+      const newMood = {
+        date: new Date().toISOString(),
+        score: data.score,
+      };
+
+      setWeeklyMoods(prev => [...prev, newMood]);
+      setMoodInput("");
+    } catch (err) {
+      console.error(err);
+      setError("Something went wrong while fetching mood score.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const chartConfig = {
+    score: {
+      label: "Mood Score",
+      color: "hsl(var(--chart-1))",
+    },
+  };
+
+  return (
+    <>
+      
+      <h2>Vibe of the day....</h2>
+      <Textarea
+        className="mdindex-txtarea"
+        value={moodInput}
+        onChange={(e) => setMoodInput(e.target.value)}
+      ></Textarea>
+      <button
+        className="mdindex-submit-btn"
+        onClick={handleSubmit}
+        disabled={loading}
+      >
+        {loading ? "Analyzing..." : "Submit"}
+      </button>
+
+      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      {weeklyMoods.length > 0 && (
+        <Card className="w-full max-w-md mt-6 p-6 space-y-4">
+          <h3 className="text-xl font-semibold text-center">
+            Your Weekly Mood Tracker
+          </h3>
+          <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+            <LineChart
+              data={formatDataForChart()}
+              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis dataKey="day" tickLine={false} axisLine={false} />
+              <YAxis domain={[0, 10]} hide />
+              <ChartTooltip content={<ChartTooltipContent />} />
+              <Line
+                type="monotone"
+                dataKey="score"
+                stroke="var(--color-score)"
+                strokeWidth={2}
+                dot={{
+                  r: 6,
+                  fill: "var(--color-score)",
+                  strokeWidth: 2,
+                }}
+                activeDot={{
+                  r: 8,
+                  fill: "var(--color-score)",
+                  stroke: "var(--color-score)",
+                  strokeWidth: 4,
+                }}
+                connectNulls={true}
+              />
+            </LineChart>
+          </ChartContainer>
+        </Card>
+      )}
+    </>
+  )
 }
-export default MoodIndexPage;
+
+export default MoodIndexPage
