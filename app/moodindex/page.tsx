@@ -113,8 +113,8 @@ const MoodIndexPage = () => {
 
   return (
     <>
+      
       <h2>Vibe of the day....</h2>
-
       <Textarea
         className="mdindex-txtarea"
         value={moodInput}

@@ -1,32 +1,19 @@
-'use client'
-import React, { ReactNode } from 'react'
-import Image from 'next/image'
+import React from 'react';
 
 interface CardProps {
-  title: string
-  description: string
-  imageUrl: string
-  className?: string
-  children?: ReactNode
+  title: string;
+  description: string;
+  imageUrl?: string;
 }
 
-export default function Card({ title, description, imageUrl, className = '', children }: CardProps) {
+export default function Card({ title, description, imageUrl }: CardProps) {
   return (
-    <div className={`max-w-md mx-auto bg-white rounded-xl shadow-lg overflow-hidden transform transition-transform duration-500 hover:scale-105 hover:-rotate-1 ${className}`}>
-      <div className="relative h-64 w-full">
-        <Image
-          src={imageUrl}
-          alt={title}
-          fill
-          className="object-cover"
-          priority
-        />
-      </div>
-      <div className="p-6 text-center">
-        <h2 className="text-2xl font-bold mb-2">{title}</h2>
-        <p className="text-gray-700">{description}</p>
-        {children}
-      </div>
+    <div className="bg-card text-card-foreground rounded-xl border shadow-sm p-6 max-w-md">
+      {imageUrl && (
+        <img src={imageUrl} alt={title} className="w-full h-48 object-cover rounded-lg mb-4" />
+      )}
+      <h2 className="text-xl font-semibold mb-2">{title}</h2>
+      <p className="text-muted-foreground">{description}</p>
     </div>
-  )
+  );
 }

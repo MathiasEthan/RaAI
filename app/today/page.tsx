@@ -4,7 +4,7 @@ import { useState } from "react";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 import { Button } from "@/components/ui/button";
 import { ForwardIcon, StepBackIcon } from "lucide-react";
-
+import { BackgroundBeams } from "@/components/ui/BackgroundBeams";
 function Today() {
   const sentences = [
     { id: 0, text: "How are you feeling today?" },
@@ -178,7 +178,9 @@ function Today() {
           </>
         )}
       </div>
+      <BackgroundBeams className="absolute top-0 left-0 w-full h-full z-0" />
     </div>
+
   );
 }
 
