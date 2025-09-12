@@ -23,12 +23,15 @@ const mockChallenges: Challenge[] = [
     { id: '1', title: 'Daily Gratitude', description: 'Write down three things you are grateful for each day.', reward: 'A sense of calm' },
     { id: '2', title: 'Mindful Breathing', description: 'Practice 5 minutes of focused breathing.', reward: 'Reduced stress' },
     { id: '3', title: 'Positive Affirmations', description: 'Repeat a positive affirmation to yourself.', reward: 'Increased confidence' },
+    { id: '4', title: 'Random Acts of Kindness', description: 'Perform a kind act for someone else.', reward: 'Boosted mood' },
+    { id: '5', title: 'Digital Detox', description: 'Spend one hour without any digital devices.', reward: 'Mental clarity' },
+    { id: '6', title: 'Nature Walk', description: 'Take a 20-minute walk outside.', reward: 'Improved focus' },
 ];
 
 export const Challenges = () => {
     const [challenges, setChallenges] = useState<Challenge[]>(mockChallenges);
     const [userChallenges, setUserChallenges] = useState<{ [key: string]: UserChallenge }>({});
-    const [userId, setUserId] = useState<string | null>('im moxing it');
+    const [userId, setUserId] = useState<string | null>('mock-user-1234');
     const [loading, setLoading] = useState<boolean>(false);
     const handleJoinChallenge = (challengeId: string) => {
         setUserChallenges(prev => ({
