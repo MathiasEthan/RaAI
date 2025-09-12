@@ -19,7 +19,7 @@ function CollabRewriter() {
     setIsRewriting(true);
     setError("");
     setShowResult(false);
-    
+  
     try {
       const response = await fetch('/api/rewrite', {
         method: 'POST',
