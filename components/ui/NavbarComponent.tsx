@@ -29,11 +29,16 @@ export function NavbarComponent() {
     {
       name: "Learn More",
       link: "learnmore"
+    },
+    {
+      name:"Mood Index",
+      link:"moodindex"
     }, 
     {
       name: "Rewriter",
       link: "collab-rewriter"
     }
+
   ];
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
