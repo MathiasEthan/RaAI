@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardContainer, CardBody, CardItem } from "@/components/ui/3d-card";
 import { Button } from "@/components/ui/button";
 import { twMerge } from 'tailwind-merge';
 import { BackgroundBeams } from "@/components/ui/BackgroundBeams";
@@ -69,7 +69,7 @@ export const Challenges = () => {
     return (
         <div className="p-8">
             <h1 className="text-center text-5xl font-bold mb-4">Community Challenges</h1>
-            <p className="text-center text-xl text-gray-400 mb-12">Join a challenge and build your emotional wellness streak. Your User ID: {userId}</p>
+            <p className="text-center text-xl text-muted-foreground mb-12">Join a challenge and build your emotional wellness streak. Your User ID: {userId}</p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {challenges.map(challenge => {
                     const userHasJoined = !!userChallenges[challenge.id];
@@ -77,42 +77,58 @@ export const Challenges = () => {
                     const canCompleteToday = userHasJoined && userChallenges[challenge.id].lastCompletedDate !== new Date().toISOString().slice(0, 10);
 
                     return (
-                        <Card key={challenge.id} className="bg-gray-800 text-white rounded-xl shadow-lg border-none flex flex-col justify-between">
-                            <div>
-                                <CardHeader>
-                                    <CardTitle>{challenge.title}</CardTitle>
-                                    <CardDescription className="text-gray-400 mt-2">{challenge.description}</CardDescription>
-                                </CardHeader>
-                                <CardContent className="space-y-4">
+                        <CardContainer key={challenge.id} containerClassName="py-2 flex items-center justify-center" className="w-full">
+                            <CardBody className="bg-card text-card-foreground relative group/card w-full max-w-sm h-auto rounded-xl p-6 border">
+                                <CardItem
+                                    translateZ="50"
+                                    className="text-xl font-bold text-card-foreground mb-2"
+                                >
+                                    {challenge.title}
+                                </CardItem>
+                                <CardItem
+                                    as="p"
+                                    translateZ="60"
+                                    className="text-muted-foreground text-sm max-w-sm mt-2 mb-4"
+                                >
+                                    {challenge.description}
+                                </CardItem>
+                                <CardItem translateZ="40" className="w-full mt-4">
                                     <div className="text-lg font-semibold">Reward: <span className="text-purple-400">{challenge.reward}</span></div>
+                                </CardItem>
+                                <CardItem translateZ="30" className="w-full mt-2 mb-6">
                                     <div className="flex items-center text-lg">
                                         Your Streak: <span className="ml-2 font-bold text-yellow-400">{userStreak}</span>
                                         <span className="ml-1 text-yellow-400">🔥</span>
                                     </div>
-                                </CardContent>
-                            </div>
-                            <CardFooter>
-                                {!userHasJoined ? (
-                                    <Button
-                                        onClick={() => handleJoinChallenge(challenge.id)}
-                                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold"
-                                    >
-                                        Join Challenge
-                                    </Button>
-                                ) : (
-                                    <Button
-                                        onClick={() => handleCompleteDay(challenge.id)}
-                                        disabled={!canCompleteToday}
-                                        className={cn(
-                                            "w-full font-bold",
-                                            canCompleteToday ? "bg-green-600 hover:bg-green-700 text-white" : "bg-gray-700 text-gray-500 cursor-not-allowed"
-                                        )}
-                                    >
-                                        {canCompleteToday ? "Complete Today" : "Completed!"}
-                                    </Button>
-                                )}
-                            </CardFooter>
-                        </Card>
+                                </CardItem>
+                                <CardItem
+                                    translateZ={20}
+                                    as="div"
+                                    className="w-full mt-auto"
+                                >
+                                    {!userHasJoined ? (
+                                        <Button
+                                            onClick={() => handleJoinChallenge(challenge.id)}
+                                            className="w-full"
+                                        >
+                                            Join Challenge
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            onClick={() => handleCompleteDay(challenge.id)}
+                                            disabled={!canCompleteToday}
+                                            className={cn(
+                                                "w-full font-bold",
+                                                !canCompleteToday && "cursor-not-allowed"
+                                            )}
+                                            variant={canCompleteToday ? "default" : "secondary"}
+                                        >
+                                            {canCompleteToday ? "Complete Today" : "Completed!"}
+                                        </Button>
+                                    )}
+                                </CardItem>
+                            </CardBody>
+                        </CardContainer>
                     );
                 })}
             </div>
