@@ -1,9 +1,11 @@
-'use client'
-import React, { useState, useEffect } from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import { CardContainer, CardBody, CardItem } from "@/components/ui/3d-card";
 import { Button } from "@/components/ui/button";
 import { twMerge } from 'tailwind-merge';
 import { BackgroundBeams } from "@/components/ui/BackgroundBeams";
+
 // Define the shape of our data
 interface Challenge {
     id: string;
@@ -28,11 +30,12 @@ const mockChallenges: Challenge[] = [
     { id: '6', title: 'Nature Walk', description: 'Take a 20-minute walk outside.', reward: 'Improved focus' },
 ];
 
-export const Challenges = () => {
+const Challenges = () => {
     const [challenges, setChallenges] = useState<Challenge[]>(mockChallenges);
     const [userChallenges, setUserChallenges] = useState<{ [key: string]: UserChallenge }>({});
     const [userId, setUserId] = useState<string | null>('mock-user-1234');
     const [loading, setLoading] = useState<boolean>(false);
+
     const handleJoinChallenge = (challengeId: string) => {
         setUserChallenges(prev => ({
             ...prev,
@@ -67,64 +70,89 @@ export const Challenges = () => {
     }
 
     return (
-        <div className="p-8 relative">
-            <h1 className="text-center text-5xl font-bold mb-4">Community Challenges</h1>
-            <p className="text-center text-xl text-muted-foreground mb-12">Join a challenge and build your emotional wellness streak. Your User ID: {userId}</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {challenges.map(challenge => {
-                    const userHasJoined = !!userChallenges[challenge.id];
-                    const userStreak = userHasJoined ? userChallenges[challenge.id].currentStreak : 0;
-                    const canCompleteToday = userHasJoined && userChallenges[challenge.id].lastCompletedDate !== new Date().toISOString().slice(0, 10);
+        // Added relative positioning and a higher z-index to the main container
+        // to ensure content is above the BackgroundBeams.
+        <div className="relative w-full min-h-screen pt-24 pb-12 flex flex-col items-center">
+            <div className="relative z-10 w-full max-w-7xl mx-auto px-4">
+                <h1 className="text-center text-4xl sm:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-indigo-600 text-transparent bg-clip-text">
+                    Community Challenges
+                </h1>
+                <p className="text-center text-lg sm:text-xl text-muted-foreground mb-12">
+                    Join a challenge and build your emotional wellness streak. Your User ID: {userId}
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {challenges.map(challenge => {
+                        const userHasJoined = !!userChallenges[challenge.id];
+                        const userStreak = userHasJoined ? userChallenges[challenge.id].currentStreak : 0;
+                        const canCompleteToday = userHasJoined && userChallenges[challenge.id].lastCompletedDate !== new Date().toISOString().slice(0, 10);
 
-                    return (
-                        <CardContainer key={challenge.id} containerClassName="w-full h-full p-0">
-                            <CardBody className="bg-card text-card-foreground rounded-xl shadow-lg border border-border flex flex-col justify-between p-6 w-full h-full">
-                                <div>
-                                    <CardItem translateZ="50">
-                                        <h2 className="text-2xl font-bold">{challenge.title}</h2>
+                        return (
+                            <CardContainer 
+                                key={challenge.id} 
+                                // Cleaned up containerClassName for better alignment
+                                containerClassName="w-full flex justify-center items-center" 
+                                // Added a fixed width to the card for consistent 3D effect.
+                                className="w-full h-auto max-w-sm"
+                            >
+                                <CardBody 
+                                    className="bg-card text-card-foreground relative group/card w-full h-auto rounded-xl p-6 border border-gray-700 shadow-lg hover:shadow-2xl transition-all duration-300"
+                                >
+                                    <CardItem
+                                        translateZ="50"
+                                        className="text-xl font-bold text-card-foreground mb-2"
+                                    >
+                                        {challenge.title}
                                     </CardItem>
-                                    <CardItem translateZ="60">
-                                        <p className="text-muted-foreground mt-2">{challenge.description}</p>
+                                    <CardItem
+                                        as="p"
+                                        translateZ="60"
+                                        className="text-muted-foreground text-sm mt-2 mb-4"
+                                    >
+                                        {challenge.description}
                                     </CardItem>
-                                    <div className="space-y-4 mt-4">
-                                        <CardItem translateZ="40">
-                                            <div className="text-lg font-semibold">Reward: <span className="text-primary">{challenge.reward}</span></div>
-                                        </CardItem>
-                                        <CardItem translateZ="30">
-                                            <div className="flex items-center text-lg">
-                                                Your Streak: <span className="ml-2 font-bold text-accent-foreground">{userStreak}</span>
-                                                <span className="ml-1 text-accent-foreground">🔥</span>
-                                            </div>
-                                        </CardItem>
-                                    </div>
-                                </div>
-                                <CardItem translateZ="20" className="mt-6">
-                                    {!userHasJoined ? (
-                                        <Button
-                                            onClick={() => handleJoinChallenge(challenge.id)}
-                                            className="w-full"
-                                            variant="default"
-                                        >
-                                            Join Challenge
-                                        </Button>
-                                    ) : (
-                                        <Button
-                                            onClick={() => handleCompleteDay(challenge.id)}
-                                            disabled={!canCompleteToday}
-                                            className={cn(
-                                                "w-full",
-                                                canCompleteToday ? "" : "opacity-50 cursor-not-allowed"
-                                            )}
-                                            variant={canCompleteToday ? "default" : "secondary"}
-                                        >
-                                            {canCompleteToday ? "Complete Today" : "Completed!"}
-                                        </Button>
-                                    )}
-                                </CardItem>
-                            </CardBody>
-                        </CardContainer>
-                    );
-                })}
+                                    <CardItem translateZ="40" className="w-full mt-4">
+                                        <div className="text-lg font-semibold">
+                                            Reward: <span className="text-purple-400">{challenge.reward}</span>
+                                        </div>
+                                    </CardItem>
+                                    <CardItem translateZ="30" className="w-full mt-2 mb-6">
+                                        <div className="flex items-center text-lg">
+                                            Your Streak: <span className="ml-2 font-bold text-yellow-400">{userStreak}</span>
+                                            <span className="ml-1 text-yellow-400">🔥</span>
+                                        </div>
+                                    </CardItem>
+                                    <CardItem
+                                        translateZ={20}
+                                        as="div"
+                                        className="w-full mt-auto"
+                                    >
+                                        {!userHasJoined ? (
+                                            <Button
+                                                onClick={() => handleJoinChallenge(challenge.id)}
+                                                className="w-full"
+                                            >
+                                                Join Challenge
+                                            </Button>
+                                        ) : (
+                                            <Button
+                                                onClick={() => handleCompleteDay(challenge.id)}
+                                                disabled={!canCompleteToday}
+                                                className={cn(
+                                                    "w-full font-bold",
+                                                    !canCompleteToday && "cursor-not-allowed"
+                                                )}
+                                                variant={canCompleteToday ? "default" : "secondary"}
+                                            >
+                                                {canCompleteToday ? "Complete Today" : "Completed!"}
+                                            </Button>
+                                        )}
+                                    </CardItem>
+                                </CardBody>
+                            </CardContainer>
+                        );
+                    })}
+                </div>
+
             </div>
             <BackgroundBeams className="absolute top-0 left-0 w-full h-full -z-10 pointer-events-none" />
         </div>
