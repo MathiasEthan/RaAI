@@ -29,7 +29,12 @@ export function NavbarComponent() {
     {
       name: "Learn More",
       link: "learnmore"
+    },
+    {
+      name:"Mood Index",
+      link:"moodindex"
     }
+
   ];
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
