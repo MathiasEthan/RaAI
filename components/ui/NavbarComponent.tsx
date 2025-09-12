@@ -24,8 +24,12 @@ export function NavbarComponent() {
       link: "dashboard",
     },
     {
-      name: "Get Started",
-      link: "onboarding",
+      name: "Journal",
+      link: "journal",
+    },
+    {
+      name: "Exercises",
+      link: "exercise",
     },
     {
       name: "Community Wellness",
@@ -38,8 +42,11 @@ export function NavbarComponent() {
     {
       name: "Rewriter",
       link: "collab-rewriter"
+    },
+    {
+      name: "Get Started",
+      link: "onboarding",
     }
-
   ];
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -54,8 +61,6 @@ export function NavbarComponent() {
           <div className="flex items-center gap-4">
             
             <NavbarButton variant="secondary" href="/login">Login</NavbarButton>
-
-            <NavbarButton variant="primary" >Book a demo</NavbarButton>
           </div>
         </NavBody>
 
@@ -94,14 +99,6 @@ export function NavbarComponent() {
                 className="w-full"
               >
                 Login
-              </NavbarButton>
-
-              <NavbarButton
-                onClick={() => setIsMobileMenuOpen(false)}
-                variant="primary"
-                className="w-full"
-              >
-                Book a demo
               </NavbarButton>
             </div>
           </MobileNavMenu>

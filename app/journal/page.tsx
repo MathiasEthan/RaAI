@@ -1,0 +1,257 @@
+'use client'
+
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Textarea } from "@/components/ui/textarea"
+import { Badge } from "@/components/ui/badge"
+import { Mic, Camera, Brain, MessageCircle, Target } from "lucide-react"
+import Link from "next/link"
+
+interface AnalysisResult {
+  emotions: Array<{ name: string; intensity: number }>
+  sentiment: number
+  focus: string
+  patterns: string[]
+  recommendations: string[]
+}
+
+export default function JournalPage() {
+  const [journalText, setJournalText] = useState("")
+  const [analysis, setAnalysis] = useState<AnalysisResult | null>(null)
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+
+  const handleAnalyze = async () => {
+    if (!journalText.trim()) return
+
+    setIsAnalyzing(true)
+    
+    // Simulate API call to AI analysis service
+    setTimeout(() => {
+      const mockAnalysis: AnalysisResult = {
+        emotions: [
+          { name: "Frustration", intensity: 0.8 },
+          { name: "Anxiety", intensity: 0.6 },
+          { name: "Hope", intensity: 0.3 }
+        ],
+        sentiment: -0.3,
+        focus: "Self-Regulation",
+        patterns: [
+          "Quick emotional escalation",
+          "Work-related stress triggers",
+          "Difficulty expressing needs"
+        ],
+        recommendations: [
+          "Practice box breathing before meetings",
+          "Try perspective-taking exercise",
+          "Set clearer boundaries at work"
+        ]
+      }
+      setAnalysis(mockAnalysis)
+      setIsAnalyzing(false)
+    }, 2000)
+  }
+
+  const handleVoiceNote = () => {
+    // Voice recording functionality would go here
+    alert("Voice recording feature coming soon!")
+  }
+
+  const handlePhotoAttachment = () => {
+    // Photo attachment functionality would go here
+    alert("Photo attachment feature coming soon!")
+  }
+
+  const getSentimentColor = (sentiment: number) => {
+    if (sentiment > 0.2) return "text-green-600"
+    if (sentiment < -0.2) return "text-red-600"
+    return "text-yellow-600"
+  }
+
+  const getSentimentLabel = (sentiment: number) => {
+    if (sentiment > 0.2) return "Positive"
+    if (sentiment < -0.2) return "Negative"
+    return "Neutral"
+  }
+
+  return (
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <Card>
+        <CardHeader className="text-center">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <MessageCircle className="h-6 w-6 text-blue-500" />
+            <CardTitle className="text-2xl">📝 Daily Reflection</CardTitle>
+          </div>
+          <CardDescription>
+            Share your thoughts and get AI-powered emotional insights
+          </CardDescription>
+        </CardHeader>
+        
+        <CardContent className="space-y-6">
+          {/* Journal Input */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium">How was your day?</h3>
+            <Textarea
+              placeholder="I had a challenging meeting with my team today. I felt frustrated when they disagreed with my proposal..."
+              value={journalText}
+              onChange={(e) => setJournalText(e.target.value)}
+              className="min-h-[150px] text-base"
+            />
+            
+            {/* Action Buttons */}
+            <div className="flex flex-wrap gap-3">
+              <Button
+                onClick={handleVoiceNote}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2"
+              >
+                <Mic className="h-4 w-4" />
+                🎙️ Voice Note
+              </Button>
+              <Button
+                onClick={handlePhotoAttachment}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2"
+              >
+                <Camera className="h-4 w-4" />
+                📸 Add Photo
+              </Button>
+              <Button
+                onClick={handleAnalyze}
+                disabled={!journalText.trim() || isAnalyzing}
+                className="flex items-center gap-2"
+              >
+                <Brain className="h-4 w-4" />
+                {isAnalyzing ? "Analyzing..." : "🎯 Analyze"}
+              </Button>
+            </div>
+          </div>
+
+          {/* Analysis Results */}
+          {analysis && (
+            <Card className="border-2 border-blue-200 dark:border-blue-800">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Brain className="h-5 w-5 text-blue-500" />
+                  🤖 AI Analysis
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Emotions Detected */}
+                <div className="space-y-3">
+                  <h4 className="font-medium flex items-center gap-2">
+                    😤 Emotions Detected
+                  </h4>
+                  <div className="space-y-2">
+                    {analysis.emotions.map((emotion, index) => (
+                      <div key={index} className="flex items-center justify-between">
+                        <span className="text-sm font-medium">{emotion.name}</span>
+                        <div className="flex items-center gap-2 flex-1 max-w-[200px]">
+                          <div className="flex-1 bg-muted rounded-full h-2">
+                            <div 
+                              className="bg-blue-500 h-2 rounded-full" 
+                              style={{ width: `${emotion.intensity * 100}%` }}
+                            />
+                          </div>
+                          <span className="text-sm text-muted-foreground">
+                            {(emotion.intensity * 100).toFixed(0)}%
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Sentiment & Focus */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <h4 className="font-medium">📊 Overall Sentiment</h4>
+                    <div className="flex items-center gap-2">
+                      <Badge 
+                        variant="outline" 
+                        className={getSentimentColor(analysis.sentiment)}
+                      >
+                        {getSentimentLabel(analysis.sentiment)}
+                      </Badge>
+                      <span className="text-sm text-muted-foreground">
+                        ({analysis.sentiment > 0 ? '+' : ''}{analysis.sentiment.toFixed(1)})
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <h4 className="font-medium">🎯 Recommended Focus</h4>
+                    <Badge variant="secondary">{analysis.focus}</Badge>
+                  </div>
+                </div>
+
+                {/* Patterns Identified */}
+                <div className="space-y-3">
+                  <h4 className="font-medium">💡 Patterns Identified</h4>
+                  <ul className="space-y-1">
+                    {analysis.patterns.map((pattern, index) => (
+                      <li key={index} className="text-sm text-muted-foreground flex items-start gap-2">
+                        <span className="text-orange-500">•</span>
+                        {pattern}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Recommendations */}
+                <div className="space-y-3">
+                  <h4 className="font-medium">✨ Recommendations</h4>
+                  <div className="space-y-2">
+                    {analysis.recommendations.map((rec, index) => (
+                      <div key={index} className="p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
+                        <p className="text-sm">{rec}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t">
+                  <Link href="/exercise" className="flex-1">
+                    <Button className="w-full flex items-center gap-2">
+                      <Target className="h-4 w-4" />
+                      ▶️ Start Exercise
+                    </Button>
+                  </Link>
+                  <Button 
+                    variant="outline" 
+                    className="flex-1"
+                    onClick={handleAnalyze}
+                  >
+                    🔄 Re-analyze
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Save Entry */}
+          <div className="flex justify-center pt-6">
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                // Save journal entry logic
+                localStorage.setItem('lastJournalEntry', JSON.stringify({
+                  date: new Date().toISOString(),
+                  text: journalText,
+                  analysis
+                }))
+                alert("Journal entry saved!")
+              }}
+              disabled={!journalText.trim()}
+            >
+              💾 Save Entry
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
