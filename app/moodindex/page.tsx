@@ -45,8 +45,8 @@ const ChatMessage = memo(({ message, isCurrentUser }: { message: Message; isCurr
         className={cn(
           "max-w-[80%] flex flex-col rounded-xl p-3",
           isCurrentUser
-            ? "bg-blue-600 text-white rounded-br-none"
-            : "bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-gray-50 rounded-bl-none"
+            ? "bg-primary text-primary-foreground rounded-br-none"
+            : "bg-muted text-muted-foreground rounded-bl-none"
         )}
       >
         <p className="text-sm">{message.text}</p>
@@ -134,36 +134,34 @@ const MoodIndex = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-50 font-sans">
-      <div className="flex-1 overflow-hidden p-4 flex flex-col items-center">
-        <div className="w-full max-w-4xl h-full flex flex-col rounded-xl shadow-md bg-gray-50 dark:bg-gray-900">
-          <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-t-xl border-b border-gray-200 dark:border-gray-700">
-            <h1 className="text-lg font-semibold text-center">Mood Journal</h1>
-          </div>
-          <div className="flex-1 p-4 overflow-hidden">
-            <ScrollArea className="h-full">
-              <div className="flex flex-col space-y-4 pr-4">
-                {messages.map((msg) => (
-                  <ChatMessage key={msg.id} message={msg} isCurrentUser={msg.senderId === USER_ID} />
-                ))}
-                <div ref={messagesEndRef} />
-              </div>
-            </ScrollArea>
-          </div>
-          <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-            <form onSubmit={handleSendMessage} className="flex w-full items-center space-x-2">
-              <Input
-                placeholder="Type your message..."
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                disabled={loading}
-                className="flex-1 bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600"
-              />
-              <Button size="icon" type="submit" disabled={loading || input.trim() === ''} className="flex-shrink-0">
-                {loading ? <Loader2 className="animate-spin" /> : <Send size={20} />}
-              </Button>
-            </form>
-          </div>
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="w-full flex flex-col rounded-xl shadow-md bg-card border">
+        <div className="bg-muted/50 p-4 rounded-t-xl border-b">
+          <h1 className="text-lg font-semibold text-center">Mood Journal</h1>
+        </div>
+        <div className="flex-1 p-4 min-h-[400px] max-h-[600px] overflow-hidden">
+          <ScrollArea className="h-full">
+            <div className="flex flex-col space-y-4 pr-4">
+              {messages.map((msg) => (
+                <ChatMessage key={msg.id} message={msg} isCurrentUser={msg.senderId === USER_ID} />
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
+          </ScrollArea>
+        </div>
+        <div className="p-4 border-t">
+          <form onSubmit={handleSendMessage} className="flex w-full items-center space-x-2">
+            <Input
+              placeholder="Type your message..."
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              disabled={loading}
+              className="flex-1"
+            />
+            <Button size="icon" type="submit" disabled={loading || input.trim() === ''} className="flex-shrink-0">
+              {loading ? <Loader2 className="animate-spin" /> : <Send size={20} />}
+            </Button>
+          </form>
         </div>
       </div>
     </div>

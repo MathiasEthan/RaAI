@@ -72,7 +72,7 @@ class ApiClient {
       return await this.request('/health');
     } catch (error) {
       console.warn('Health check failed:', error);
-      return { status: 'offline', error: error.message };
+      return { status: 'offline', error: typeof error === 'object' && error !== null && 'message' in error ? (error as { message: string }).message : String(error) };
     }
   }
 
@@ -80,7 +80,7 @@ class ApiClient {
   async getCheckInQuestions() {
     try {
       return await this.request('/analytics/checkin/questions');
-    } catch (error) {
+    } catch {
       console.warn('Failed to get questions from backend, using fallback');
       return {
         questions: [
@@ -95,13 +95,13 @@ class ApiClient {
   }
 
   // Submit check-in with fallback
-  async submitCheckIn(data: any) {
+  async submitCheckIn(data: Record<string, unknown>) {
     try {
       return await this.request('/analytics/checkin', {
         method: 'POST',
         body: JSON.stringify(data),
       });
-    } catch (error) {
+    } catch {
       console.warn('Failed to submit to backend, storing locally');
       // Calculate simple mood score locally
       const responses = { ...data };
@@ -120,13 +120,13 @@ class ApiClient {
   }
 
   // Journal analysis with fallback
-  async analyzeJournalEntry(data: any) {
+  async analyzeJournalEntry(data: { journal: string; [key: string]: unknown }) {
     try {
       return await this.request('/ai/analyze-entry', {
         method: 'POST',
         body: JSON.stringify(data),
       });
-    } catch (error) {
+    } catch {
       console.warn('Failed to analyze with backend, using simple analysis');
       return {
         safety: { label: 'SAFE' },
@@ -150,8 +150,8 @@ class ApiClient {
   }
 
   // Simple fallback emotion analysis
-  private analyzeFallbackEmotions(text: string) {
-    const emotions = [];
+  private analyzeFallbackEmotions(text: string): Array<{ label: string; score: number }> {
+    const emotions: Array<{ label: string; score: number }> = [];
     const lowerText = text.toLowerCase();
     
     if (lowerText.includes('happy') || lowerText.includes('joy') || lowerText.includes('good')) {
@@ -194,7 +194,7 @@ class ApiClient {
   async getBaselineQuestions() {
     try {
       return await this.request('/ai/get-baseline-questions');
-    } catch (error) {
+    } catch {
       return {
         questions: [
           {"qid": "SA1", "facet": "self_awareness", "text": "I can recognize my emotions as they arise."},
@@ -207,13 +207,13 @@ class ApiClient {
     }
   }
 
-  async submitBaseline(data: any) {
+  async submitBaseline(data: Record<string, unknown>) {
     try {
       return await this.request('/ai/score-baseline', {
         method: 'POST',
         body: JSON.stringify(data),
       });
-    } catch (error) {
+    } catch {
       // Simple fallback scoring
       const scores = {
         self_awareness: 0.6,
@@ -233,13 +233,13 @@ class ApiClient {
     }
   }
 
-  async rewriteText(data: any) {
+  async rewriteText(data: { text: string; [key: string]: unknown }) {
     try {
       return await this.request('/collab/rewrite', {
         method: 'POST',
         body: JSON.stringify(data),
       });
-    } catch (error) {
+    } catch {
       return {
         rewrite: data.text, // Return original text if rewrite fails
         removed_terms: [],
@@ -252,18 +252,18 @@ class ApiClient {
   async getMoodSeries(userId: string, days: number = 30) {
     try {
       return await this.request(`/analytics/series?user_id=${userId}&days=${days}`);
-    } catch (error) {
+    } catch {
       return { series: [], offline: true };
     }
   }
 
-  async getExercise(data: any) {
+  async getExercise(data: Record<string, unknown>) {
     try {
       return await this.request('/ai/get-exercise', {
         method: 'POST',
         body: JSON.stringify(data),
       });
-    } catch (error) {
+    } catch {
       return {
         exercise: {
           exercise_id: "fallback_breathing",
@@ -284,7 +284,7 @@ class ApiClient {
         method: 'POST',
         body: JSON.stringify({ text }),
       });
-    } catch (error) {
+    } catch {
       return { label: 'SAFE', offline: true };
     }
   }
@@ -298,13 +298,11 @@ export function isOfflineMode(): boolean {
 }
 
 // Helper to handle API errors gracefully
-export function handleApiError(error: any, fallback?: any) {
+export function handleApiError(error: unknown, fallback?: unknown) {
   console.error('API Error:', error);
-  
-  if (error.message?.includes('Cannot connect to backend')) {
+  if (typeof error === 'object' && error !== null && 'message' in error && typeof (error as { message: string }).message === 'string' && (error as { message: string }).message.includes('Cannot connect to backend')) {
     console.warn('Backend appears to be offline, using fallback data');
   }
-  
   return fallback || null;
 }
 
