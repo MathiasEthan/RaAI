@@ -21,7 +21,8 @@ interface UserChallenge {
     lastCompletedDate: string;
 }
 
-const cn = (...classNames: (string | boolean | undefined | null)[]) => twMerge(...classNames);
+const cn = (...classNames: (string | boolean | undefined | null)[]) => 
+    twMerge(...classNames.filter((className): className is string => typeof className === 'string' && className.length > 0));
 const mockChallenges: Challenge[] = [
     { id: '1', title: 'Daily Gratitude', description: 'Write down three things you are grateful for each day.', reward: 'A sense of calm' },
     { id: '2', title: 'Mindful Breathing', description: 'Practice 5 minutes of focused breathing.', reward: 'Reduced stress' },
