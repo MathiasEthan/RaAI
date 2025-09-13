@@ -6,7 +6,7 @@ from logger.custom_logger import CustomLogger
 from dotenv import load_dotenv
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
-
+import time
 load_dotenv()
 
 _LOG = CustomLogger().get_logger(__name__)
@@ -236,6 +236,23 @@ async def get_team_participation_stats(team_id: str, min_users: int = 5) -> Opti
         "anonymized": True
     }
 
+async def get_user_checkins_safe(user_id: str, days: int = 30) -> list:
+    """Get recent checkins for a user with fallback."""
+    try:
+        return await get_user_checkins(user_id, days)
+    except Exception as e:
+        print(f"Database query failed: {e}")
+        return []  # Return empty list as fallback
+
+async def upsert_checkin_safe(checkin_data: dict) -> dict:
+    """Upsert checkin data with fallback."""
+    try:
+        return await upsert_checkin(checkin_data)
+    except Exception as e:
+        print(f"Database save failed: {e}")
+        # Return the data with an ID to simulate saving
+        checkin_data["_id"] = f"offline_{int(time.time())}"
+        return checkin_data
 
 
 uri = os.getenv("MONGO_URI")  

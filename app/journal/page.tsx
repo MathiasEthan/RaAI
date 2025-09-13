@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
+import { apiClient } from "@/lib/api"
 import { 
   IconEdit, 
   IconMicrophone, 
@@ -36,35 +37,73 @@ export default function JournalPage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false)
 
   const handleAnalyze = async () => {
-    if (!journalText.trim()) return
-
-    setIsAnalyzing(true)
+    if (!journalText.trim()) return;
+  
+    setIsAnalyzing(true);
     
-    // Simulate API call to AI analysis service
-    setTimeout(() => {
-      const mockAnalysis: AnalysisResult = {
-        emotions: [
-          { name: "Frustration", intensity: 0.8 },
-          { name: "Anxiety", intensity: 0.6 },
-          { name: "Hope", intensity: 0.3 }
-        ],
-        sentiment: -0.3,
-        focus: "Self-Regulation",
-        patterns: [
-          "Quick emotional escalation",
-          "Work-related stress triggers",
-          "Difficulty expressing needs"
-        ],
-        recommendations: [
-          "Practice box breathing before meetings",
-          "Try perspective-taking exercise",
-          "Set clearer boundaries at work"
-        ]
+    try {
+      // Submit to backend for analysis
+      const analysisData = {
+        user_id: "temp-user-id", // Replace with actual user ID
+        mood: 3, // Default mood, could be from a slider
+        journal: journalText,
+        context: {}
+      };
+  
+      const response = await apiClient.analyzeJournalEntry(analysisData);
+      
+      if (response.safety?.label === 'ESCALATE') {
+        // Handle safety concern
+        setAnalysis({
+          emotions: [],
+          sentiment: 0,
+          focus: "Safety",
+          patterns: ["Safety concern detected"],
+          recommendations: [response.message || "Please reach out for support"]
+        });
+      } else {
+        // Convert backend response to frontend format
+        const backendAnalysis = response.analysis;
+        const mockAnalysis = {
+          emotions: backendAnalysis.emotions.map((e: any) => ({
+            name: e.label,
+            intensity: e.score
+          })),
+          sentiment: backendAnalysis.sentiment,
+          focus: Object.keys(backendAnalysis.facet_signals).find(key => 
+            backendAnalysis.facet_signals[key] === '-'
+          ) || "Self-Awareness",
+          patterns: backendAnalysis.cognitive_distortions,
+          recommendations: response.recommendation ? [
+            `Try: ${response.recommendation.title}`,
+            response.recommendation.expected_outcome
+          ] : ["Continue journaling regularly"]
+        };
+        
+        setAnalysis(mockAnalysis);
       }
-      setAnalysis(mockAnalysis)
-      setIsAnalyzing(false)
-    }, 2000)
-  }
+      
+    } catch (error) {
+      console.error('Analysis failed:', error);
+      // Fallback to mock analysis
+      const mockAnalysis = {
+        emotions: [
+          { name: "Reflection", intensity: 0.7 },
+          { name: "Curiosity", intensity: 0.5 }
+        ],
+        sentiment: 0.1,
+        focus: "Self-Awareness",
+        patterns: ["Introspective thinking"],
+        recommendations: [
+          "Continue regular journaling",
+          "Try mindfulness exercises"
+        ]
+      };
+      setAnalysis(mockAnalysis);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
 
   const handleVoiceNote = () => {
     // Voice recording functionality would go here

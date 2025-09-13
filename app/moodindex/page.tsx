@@ -99,19 +99,55 @@ const MoodIndex = () => {
     }
   }, [messages]);
 
-  const handleSendMessage = (e: FormEvent) => {
+  const handleSendMessage = async (e: FormEvent) => {
     e.preventDefault();
     if (input.trim() === '' || loading) return;
-
+  
     const newMessage: Message = {
       id: Date.now().toString(),
       text: input,
       senderId: USER_ID,
       timestamp: new Date(),
     };
-
+  
     setMessages((prev) => [...prev, newMessage]);
+    const currentInput = input;
     setInput('');
+    setLoading(true);
+  
+    try {
+      // Call your backend API
+      const response = await fetch('http://localhost:8000/chat/mood', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: currentInput,
+          session_id: 'mood_chat_session'
+        })
+      });
+  
+      const data = await response.json();
+      
+      const botResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        text: data.response || "I'm here to listen and support you.",
+        senderId: BOT_ID,
+        timestamp: new Date(),
+      };
+      
+      setMessages((prev) => [...prev, botResponse]);
+    } catch (error) {
+      console.error('Chat API failed:', error);
+      const fallbackResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        text: "I'm having trouble connecting right now, but I want you to know that your feelings matter and support is available.",
+        senderId: BOT_ID,
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, fallbackResponse]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
