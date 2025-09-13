@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
+import { apiClient } from "@/lib/api"
 
 import { useIsMobile } from "@/hooks/use-mobile"
 import {
@@ -30,34 +31,71 @@ import {
   ToggleGroupItem,
 } from "@/components/ui/toggle-group"
 
-export const description = "An interactive area chart"
+export const description = "An interactive area chart showing emotional intelligence scores over time"
 
-// Dummy data with card titles
-const chartData = [
-  { date: "2024-06-01", predict: 120, annotate: 200, review: 150, train: 80, analyze: 60 },
-  { date: "2024-06-02", predict: 140, annotate: 180, review: 170, train: 90, analyze: 70 },
-  { date: "2024-06-03", predict: 160, annotate: 210, review: 130, train: 100, analyze: 80 },
-  { date: "2024-06-04", predict: 180, annotate: 190, review: 120, train: 110, analyze: 90 },
-  { date: "2024-06-05", predict: 200, annotate: 220, review: 140, train: 120, analyze: 100 },
-  { date: "2024-06-06", predict: 170, annotate: 210, review: 160, train: 130, analyze: 110 },
-  { date: "2024-06-07", predict: 150, annotate: 230, review: 180, train: 140, analyze: 120 },
-  { date: "2024-06-08", predict: 130, annotate: 200, review: 170, train: 150, analyze: 130 },
-  { date: "2024-06-09", predict: 110, annotate: 180, review: 160, train: 160, analyze: 140 },
-  { date: "2024-06-10", predict: 100, annotate: 170, review: 150, train: 170, analyze: 150 },
-]
+// Generate sample time series data based on current scores
+function generateTimeSeriesData(scores: Record<string, number>) {
+  const dates = [];
+  const today = new Date();
+  
+  // Generate last 30 days of data
+  for (let i = 29; i >= 0; i--) {
+    const date = new Date(today);
+    date.setDate(today.getDate() - i);
+    
+    // Add some variation to the scores over time
+    const variation = () => Math.random() * 20 - 10; // ±10 points variation
+    
+    dates.push({
+      date: date.toISOString().split('T')[0],
+      self_awareness: Math.max(0, Math.min(100, scores.self_awareness + variation())),
+      self_regulation: Math.max(0, Math.min(100, scores.self_regulation + variation())),
+      motivation: Math.max(0, Math.min(100, scores.motivation + variation())),
+      empathy: Math.max(0, Math.min(100, scores.empathy + variation())),
+      social_skills: Math.max(0, Math.min(100, scores.social_skills + variation()))
+    });
+  }
+  
+  return dates;
+}
 
-// Chart config with card titles
+// Chart config with EI categories
 const chartConfig = {
-  predict: { label: "Self Awareness", color: "#6366f1" },
-  annotate: { label: "Self Regulation", color: "#f59e42" },
-  review: { label: "Motivation", color: "#10b981" },
-  train: { label: "Empathy", color: "#ef4444" },
-  analyze: { label: "Empathy", color: "#f472b6" },
+  self_awareness: { label: "Self-Awareness", color: "#6366f1" },
+  self_regulation: { label: "Self-Regulation", color: "#f59e42" },
+  motivation: { label: "Motivation", color: "#10b981" },
+  empathy: { label: "Empathy", color: "#ef4444" },
+  social_skills: { label: "Social Skills", color: "#f472b6" },
 } satisfies ChartConfig
+
+interface ChartDataPoint {
+  date: string;
+  self_awareness: number;
+  self_regulation: number;
+  motivation: number;
+  empathy: number;
+  social_skills: number;
+}
+
+interface DashboardScores {
+  scores: {
+    self_awareness: number;
+    self_regulation: number;
+    motivation: number;
+    empathy: number;
+    social_skills: number;
+  };
+  trends: Record<string, number>;
+  overall_mood_index: number;
+  last_updated: string;
+  offline?: boolean;
+}
 
 export function ChartAreaInteractive() {
   const isMobile = useIsMobile()
-  const [timeRange, setTimeRange] = React.useState("90d")
+  const [timeRange, setTimeRange] = React.useState("30d")
+  const [chartData, setChartData] = React.useState<ChartDataPoint[]>([])
+  const [loading, setLoading] = React.useState(true)
 
   React.useEffect(() => {
     if (isMobile) {
@@ -65,8 +103,52 @@ export function ChartAreaInteractive() {
     }
   }, [isMobile])
 
-  // Adjust filtering for new dummy data (last 7 days)
-  const filteredData = chartData
+  React.useEffect(() => {
+    async function fetchData() {
+      try {
+        const dashboardData: DashboardScores = await apiClient.getDashboardScores();
+        const timeSeriesData = generateTimeSeriesData(dashboardData.scores);
+        setChartData(timeSeriesData);
+      } catch (error) {
+        console.error("Failed to fetch chart data:", error);
+        // Fallback data
+        const fallbackScores = {
+          self_awareness: 73,
+          self_regulation: 68,
+          motivation: 45,
+          empathy: 78,
+          social_skills: 62
+        };
+        setChartData(generateTimeSeriesData(fallbackScores));
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  // Filter data based on selected time range
+  const filteredData = React.useMemo(() => {
+    if (!chartData.length) return [];
+    
+    const days = timeRange === "7d" ? 7 : timeRange === "30d" ? 30 : 30;
+    return chartData.slice(-days);
+  }, [chartData, timeRange]);
+
+  if (loading) {
+    return (
+      <Card className="@container/card">
+        <CardHeader>
+          <CardTitle>Your Growth</CardTitle>
+          <CardDescription>Loading analytics...</CardDescription>
+        </CardHeader>
+        <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+          <div className="aspect-auto h-[250px] w-full bg-gray-100 animate-pulse rounded-lg"></div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="@container/card">
@@ -74,9 +156,9 @@ export function ChartAreaInteractive() {
         <CardTitle>Your Growth</CardTitle>
         <CardDescription>
           <span className="hidden @[540px]/card:block">
-            Total for the last 3 months
+            Emotional intelligence progress over time
           </span>
-          <span className="@[540px]/card:hidden">Last 3 months</span>
+          <span className="@[540px]/card:hidden">EI Progress</span>
         </CardDescription>
         <CardAction>
           <ToggleGroup
@@ -86,7 +168,6 @@ export function ChartAreaInteractive() {
             variant="outline"
             className="hidden *:data-[slot=toggle-group-item]:!px-4 @[767px]/card:flex"
           >
-            <ToggleGroupItem value="90d">Last 3 months</ToggleGroupItem>
             <ToggleGroupItem value="30d">Last 30 days</ToggleGroupItem>
             <ToggleGroupItem value="7d">Last 7 days</ToggleGroupItem>
           </ToggleGroup>
@@ -96,12 +177,9 @@ export function ChartAreaInteractive() {
               size="sm"
               aria-label="Select a value"
             >
-              <SelectValue placeholder="Last 3 months" />
+              <SelectValue placeholder="Last 30 days" />
             </SelectTrigger>
             <SelectContent className="rounded-xl">
-              <SelectItem value="90d" className="rounded-lg">
-                Last 3 months
-              </SelectItem>
               <SelectItem value="30d" className="rounded-lg">
                 Last 30 days
               </SelectItem>
@@ -119,23 +197,23 @@ export function ChartAreaInteractive() {
         >
           <AreaChart data={filteredData}>
             <defs>
-              <linearGradient id="fillPredict" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="fillSelfAwareness" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#6366f1" stopOpacity={0.8} />
                 <stop offset="95%" stopColor="#6366f1" stopOpacity={0.1} />
               </linearGradient>
-              <linearGradient id="fillAnnotate" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="fillSelfRegulation" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#f59e42" stopOpacity={0.8} />
                 <stop offset="95%" stopColor="#f59e42" stopOpacity={0.1} />
               </linearGradient>
-              <linearGradient id="fillReview" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="fillMotivation" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#10b981" stopOpacity={0.8} />
                 <stop offset="95%" stopColor="#10b981" stopOpacity={0.1} />
               </linearGradient>
-              <linearGradient id="fillTrain" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="fillEmpathy" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#ef4444" stopOpacity={0.8} />
                 <stop offset="95%" stopColor="#ef4444" stopOpacity={0.1} />
               </linearGradient>
-              <linearGradient id="fillAnalyze" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="fillSocialSkills" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#f472b6" stopOpacity={0.8} />
                 <stop offset="95%" stopColor="#f472b6" stopOpacity={0.1} />
               </linearGradient>
@@ -170,37 +248,37 @@ export function ChartAreaInteractive() {
               }
             />
             <Area
-              dataKey="predict"
+              dataKey="self_awareness"
               type="natural"
-              fill="url(#fillPredict)"
+              fill="url(#fillSelfAwareness)"
               stroke="#6366f1"
               stackId="a"
             />
             <Area
-              dataKey="annotate"
+              dataKey="self_regulation"
               type="natural"
-              fill="url(#fillAnnotate)"
+              fill="url(#fillSelfRegulation)"
               stroke="#f59e42"
               stackId="a"
             />
             <Area
-              dataKey="review"
+              dataKey="motivation"
               type="natural"
-              fill="url(#fillReview)"
+              fill="url(#fillMotivation)"
               stroke="#10b981"
               stackId="a"
             />
             <Area
-              dataKey="train"
+              dataKey="empathy"
               type="natural"
-              fill="url(#fillTrain)"
+              fill="url(#fillEmpathy)"
               stroke="#ef4444"
               stackId="a"
             />
             <Area
-              dataKey="analyze"
+              dataKey="social_skills"
               type="natural"
-              fill="url(#fillAnalyze)"
+              fill="url(#fillSocialSkills)"
               stroke="#f472b6"
               stackId="a"
             />

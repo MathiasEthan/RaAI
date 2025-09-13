@@ -94,6 +94,34 @@ class ApiClient {
     }
   }
 
+  // Dashboard scores with fallback
+  async getDashboardScores() {
+    try {
+      return await this.request('/analytics/dashboard-scores');
+    } catch {
+      console.warn('Failed to get dashboard scores from backend, using fallback');
+      return {
+        scores: {
+          self_awareness: 73,
+          self_regulation: 68,
+          motivation: 45,
+          empathy: 78,
+          social_skills: 62
+        },
+        trends: {
+          self_awareness: +12.5,
+          self_regulation: +8.3,
+          motivation: -5.2,
+          empathy: +15.1,
+          social_skills: +4.5
+        },
+        overall_mood_index: 65.4,
+        last_updated: new Date().toISOString().split('T')[0],
+        offline: true
+      };
+    }
+  }
+
   // Submit check-in with fallback
   async submitCheckIn(data: Record<string, unknown>) {
     try {

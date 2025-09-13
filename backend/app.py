@@ -6,6 +6,7 @@ import os
 from typing import List
 import requests
 import asyncio
+from core.analytics import score_checkin, compute_series_stats
 
 app = FastAPI()
 
@@ -44,6 +45,65 @@ async def call_gemini(prompt: str):
             return "I'm here to support you. How are you feeling right now?"
     except Exception as e:
         return "I understand you're reaching out. What's on your mind today?"
+
+@app.get("/analytics/dashboard-scores")
+async def get_dashboard_scores():
+    """
+    Calculate emotional intelligence scores for dashboard cards.
+    Maps the 5 Likert responses to the 5 EI categories using analytics logic.
+    """
+    # Simulate recent user data - in production, fetch from database
+    # These would be the user's recent check-in responses
+    sample_checkin = {
+        "user_id": "current_user",
+        "mood": 4.2,      # Maps to Self-Awareness
+        "stress": 2.8,    # Maps to Self-Regulation (inverted)
+        "energy": 3.5,    # Contributes to Motivation  
+        "connection": 3.8, # Maps to Empathy
+        "motivation": 3.6  # Maps to Social Skills (goal pursuit affects relationships)
+    }
+    
+    # Use analytics scoring system
+    scored_data = score_checkin(sample_checkin)
+    mood_index = scored_data["mood_index"]
+    
+    # Map individual responses to EI categories with scoring logic
+    # Convert 1-5 scale to 0-100 scale with analytics-style weighting
+    
+    def scale_to_100(value, weight=1.0):
+        """Convert 1-5 Likert to 0-100 with weighting"""
+        normalized = (value - 1) / 4  # 0-1 range
+        return round(min(100, max(0, normalized * 100 * weight)), 1)
+    
+    # Calculate individual category scores
+    self_awareness = scale_to_100(sample_checkin["mood"], 1.2)  # Mood awareness
+    self_regulation = scale_to_100(5 - sample_checkin["stress"] + 1, 1.1)  # Stress management (inverted)
+    motivation = scale_to_100((sample_checkin["energy"] + sample_checkin["motivation"]) / 2, 1.0)
+    empathy = scale_to_100(sample_checkin["connection"], 1.1)  # Connection to others
+    social_skills = scale_to_100((sample_checkin["connection"] + sample_checkin["motivation"]) / 2, 0.9)
+    
+    # Calculate trends (mock data - in production, use historical data)
+    # These would come from analyzing week-over-week changes
+    trends = {
+        "self_awareness": +12.5,
+        "self_regulation": +8.3,
+        "motivation": -5.2,
+        "empathy": +15.1,
+        "social_skills": +4.5
+    }
+    
+    return {
+        "scores": {
+            "self_awareness": self_awareness,
+            "self_regulation": self_regulation, 
+            "motivation": motivation,
+            "empathy": empathy,
+            "social_skills": social_skills
+        },
+        "trends": trends,
+        "overall_mood_index": mood_index,
+        "last_updated": date.today().isoformat()
+    }
 
 @app.get("/health")
 async def health():
