@@ -72,7 +72,7 @@ export async function generateText(prompt: string): Promise<string> {
  */
 export async function rewriteText(originalText: string, style?: string): Promise<string> {
   const styleInstruction = style ? ` in a ${style} style` : '';
-  const prompt = `Please rewrite the following text to improve clarity, grammar, and flow${styleInstruction}. Keep the core meaning intact but make it more engaging and well-structured:
+  const prompt = `Please rewrite the following text to improve clarity, grammar, and flow${styleInstruction}. Keep the core meaning intact but make it more engaging and well-structured, only respond in plain text. give one response, not multiple options. do not include any formatting. keep the response as concise as needed.
 
 "${originalText}"
 
