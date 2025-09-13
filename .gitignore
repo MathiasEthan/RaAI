@@ -44,6 +44,12 @@ next-env.d.ts
 
 # Backend Gitignore
 backend/venv/
+backend/bin/
+backend/lib/
+backend/lib64/
+backend/include/
+backend/share/
+backend/pyvenv.cfg
 backend/**/__pycache__/
 backend/**/*.py[cod]
 backend/**/*.so
