@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api';
 
 export default function ConnectionStatus() {
-  const [isOnline, setIsOnline] = useState(true);
   const [backendStatus, setBackendStatus] = useState<'checking' | 'online' | 'offline'>('checking');
 
   useEffect(() => {
@@ -15,7 +14,7 @@ export default function ConnectionStatus() {
     try {
       const health = await apiClient.health();
       setBackendStatus(health.status === 'offline' ? 'offline' : 'online');
-    } catch (error) {
+    } catch {
       setBackendStatus('offline');
     }
   };

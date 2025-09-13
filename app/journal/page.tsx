@@ -65,7 +65,7 @@ export default function JournalPage() {
         // Convert backend response to frontend format
         const backendAnalysis = response.analysis;
         const mockAnalysis = {
-          emotions: backendAnalysis.emotions.map((e: any) => ({
+          emotions: backendAnalysis.emotions.map((e: { label: string; score: number }) => ({
             name: e.label,
             intensity: e.score
           })),

@@ -90,9 +90,6 @@ function Onboarding() {
 
     // pick the 5 options for the current sentence id (wrap if needed)
     const isLastQuestion = currentId === sentences.length - 1;
-    const currentSentence = sentences[currentId]?.text;
-    const [isComplete, setIsComplete] = useState(false);
-    const [totalScore, setTotalScore] = useState(0);
     const options = optionsBySentence[currentId] || [];
 
     const handleNext = () => {
@@ -104,9 +101,6 @@ function Onboarding() {
                 if (sel === -1) return acc;
                 return acc + (optionsBySentence[idx][sel]?.score || 0);
             }, 0);
-            setTotalScore(score);
-            setIsComplete(true);
-
 
             localStorage.setItem('onboardingScore', score.toString());
 
@@ -134,7 +128,6 @@ function Onboarding() {
                     <div role="radiogroup" aria-label="Generated options" className="flex justify-center mt-20 space-x-4">
                         {options.map((opt, i) => {
                             const btnIndex = i + 1;
-                            const isSelected = selections[currentId] === opt.id;
                             return (
                                 <Button
                                     key={`${currentId}-${opt.id}`}
