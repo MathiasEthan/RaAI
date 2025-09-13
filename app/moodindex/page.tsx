@@ -80,24 +80,7 @@ const MoodIndex = () => {
     }
   }, [messages]);
 
-  useEffect(() => {
-    const lastMessage = messages[messages.length - 1];
-    if (lastMessage?.senderId === USER_ID) {
-      setLoading(true);
-      const timer = setTimeout(() => {
-        const botResponse: Message = {
-          id: Date.now().toString(),
-          text: "Thank you for sharing that. I'm here to listen whenever you need.",
-          senderId: BOT_ID,
-          timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, botResponse]);
-        setLoading(false);
-      }, 1500); // 1.5-second delay
 
-      return () => clearTimeout(timer);
-    }
-  }, [messages]);
 
   const handleSendMessage = async (e: FormEvent) => {
     e.preventDefault();
