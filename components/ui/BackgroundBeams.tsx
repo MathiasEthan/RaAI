@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { twMerge } from "tailwind-merge";
 
-const cn = (...classNames: any[]) => {
+const cn = (...classNames: (string | undefined)[]) => {
   return twMerge(classNames);
 };
 
